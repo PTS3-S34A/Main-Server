@@ -25,13 +25,4 @@ public interface IClientAuthenticated extends Remote {
      */
     Statistics getStatistics(String username) throws RemoteException;
 
-    /**
-     * Gets the game statistics of all user from the persistency service.
-     *
-     * @return A collection of all game statistics.
-     * @throws RemoteException Thrown when a communication error occurs during
-     * the remote call of this method.
-     */
-    ArrayList<Statistics> getAllStatistics() throws RemoteException;
-
 }
