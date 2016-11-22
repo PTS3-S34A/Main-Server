@@ -1,0 +1,8 @@
+#database
+#Tue Nov 8 15:53:05 CEST 2016
+protocol=jdbc
+system=mysql
+server=unium.nl
+database=marc_soccar
+user=marc_soccar
+password=soccar
