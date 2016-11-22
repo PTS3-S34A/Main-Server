@@ -48,13 +48,13 @@ public class Statistics implements Serializable {
      *
      * @return Calculated games ratio, higher/equal than/to 0.
      */
-    public String getGamesRatio() {
-        return Double.toString(((double) gamesWon - (double) gamesLost) / (double) gamesPlayed * 100.0D);
+    public Double getGamesRatio() {
+        return ((double) gamesWon - (double) gamesLost) / (double) gamesPlayed * 100.0D;
     }
 
     /**
      * Gets the username of the user.
-     * 
+     *
      * @return The username of the user.
      */
     public String getUsername() {

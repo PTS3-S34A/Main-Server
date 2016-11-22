@@ -31,7 +31,7 @@ public class UserRepository extends Repository {
     }
 
     /**
-     * Method that adds a new user to the persistency service.
+     * Adds a new user to the persistency service.
      *
      * @param username The username of the new player.
      * @param password The password of the new player.
@@ -49,8 +49,8 @@ public class UserRepository extends Repository {
     }
 
     /**
-     * Method that changes the privilege of the given player stored in the
-     * persistency service.
+     * Changes the privilege of the given player stored in the persistency
+     * service.
      *
      * @param username The username of the player whose privilege needs to be
      * changed.
@@ -64,8 +64,8 @@ public class UserRepository extends Repository {
     }
 
     /**
-     * Method that checks if a player exists in the persistency service based on
-     * the stored username.
+     * Checks if a player exists in the persistency service based on the stored
+     * username.
      *
      * @param username The username of the player that must be checked if it
      * exists in the persistency service.
@@ -82,8 +82,8 @@ public class UserRepository extends Repository {
     }
 
     /**
-     * Method that checks if the given hashed password belongs to the given
-     * username stored in the persistency service.
+     * Checks if the given hashed password belongs to the given username stored
+     * in the persistency service.
      *
      * @param username The username of the player that must be checked if it
      * mathces with the password.

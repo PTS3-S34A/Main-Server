@@ -18,7 +18,7 @@ public class SessionData {
     private int capacity;
 
     /**
-     * Constructor user for instantiation of a new SessionData object. A
+     * Constructor used for instantiation of a new SessionData object. A
      * SessionData object serves as a container object of of all info of a
      * running session.
      *

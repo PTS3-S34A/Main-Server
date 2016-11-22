@@ -73,8 +73,8 @@ public class DatabaseUtilities {
     }
 
     /**
-     * Method that prepares an SQL query call to the database using the active
-     * database connection.
+     * Prepares an SQL query call to the database using the active database
+     * connection.
      *
      * @param query The SQL query call that needs to be prepared.
      * @return The prepared CallableStatement that can be set and executed.
@@ -86,8 +86,8 @@ public class DatabaseUtilities {
     }
 
     /**
-     * Method that prepares an SQL query statement to the database using the
-     * active database connection.
+     * Prepares an SQL query statement to the database using the active database
+     * connection.
      *
      * @param query The SQL query statement that needs to be prepared.
      * @return The prepared PreparedStatement that can be set and executed.

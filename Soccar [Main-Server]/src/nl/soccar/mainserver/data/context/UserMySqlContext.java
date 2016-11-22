@@ -36,6 +36,7 @@ public class UserMySqlContext implements IUserDataContract {
             cs.execute();
             return true;
         } catch (SQLException e) {
+            LOGGER.warn("An error occurred while adding a new user to the database. It is possible that this happened because of a database constaint that prevents duplicate usernames.", e);
             return false;
         }
     }
@@ -61,6 +62,7 @@ public class UserMySqlContext implements IUserDataContract {
             cs.execute();
             return cs.getBoolean(1);
         } catch (SQLException e) {
+            LOGGER.warn("An error occurred while checking if a uses exists in the database.", e);
             return false;
         }
     }

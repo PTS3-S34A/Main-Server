@@ -32,8 +32,8 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that adds a given amount of goals to the given player stored in
-     * the persistency service.
+     * Adds a given amount of goals to the given player stored in the
+     * persistency service.
      *
      * @param username The username of the player whose amount of goals needs to
      * be increased.
@@ -46,8 +46,8 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that adds a given amount of assists to the given player stored in
-     * the persistency service.
+     * Adds a given amount of assists to the given player stored in the
+     * persistency service.
      *
      * @param username The username of the player whose amount of assists needs
      * to be increased.
@@ -60,8 +60,8 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that increments the amount of games won by a player stored in the
-     * persistency service.
+     * Increments the amount of games won by a player stored in the persistency
+     * service.
      *
      * @param username The username of the player whose amount of won games
      * needs to be incremented.
@@ -73,8 +73,8 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that increments the amount of games lost by a player stored in the
-     * persistency service.
+     * Increments the amount of games lost by a player stored in the persistency
+     * service.
      *
      * @param username The username of the player whose amount of lost games
      * needs to be incremented.
@@ -86,8 +86,8 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that increments the amount of games played by a player stored in
-     * the persistency service.
+     * Increments the amount of games played by a player stored in the
+     * persistency service.
      *
      * @param username The username of the player whose amount of played games
      * needs to be incremented.
@@ -99,8 +99,7 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that gets the game statistics of a player stored in the
-     * persistency service.
+     * Gets the game statistics of a player stored in the persistency service.
      *
      * @param username The username of the player whose statistics needs to be
      * retrieved from the persistency service.
@@ -117,8 +116,7 @@ public class StatisticsRepository extends Repository {
     }
 
     /**
-     * Method that gets the game statistics of all players from the persistency
-     * service.
+     * Gets the game statistics of all players from the persistency service.
      *
      * @return A collection of all game statistics.
      */

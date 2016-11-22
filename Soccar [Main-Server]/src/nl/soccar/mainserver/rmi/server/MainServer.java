@@ -60,7 +60,7 @@ public abstract class MainServer extends UnicastRemoteObject {
     }
 
     /**
-     * gets the statistics data repository.
+     * Gets the statistics data repository.
      *
      * @return The statistics data repository.
      */

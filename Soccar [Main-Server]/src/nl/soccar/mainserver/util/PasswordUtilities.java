@@ -24,8 +24,7 @@ public class PasswordUtilities {
     }
 
     /**
-     * Methods that generates a random salt of 16 bytes based on the SHA1PRNG
-     * algoritm.
+     * Generates a random salt of 16 bytes based on the SHA1PRNG algoritm.
      *
      * @return The random salt as a byte array.
      */
@@ -43,8 +42,8 @@ public class PasswordUtilities {
     }
 
     /**
-     * Method that adds a salt to a hashed password and combines them as one
-     * byte array of 64 bytes.
+     * Adds a salt to a hashed password and combines them as one byte array of
+     * 64 bytes.
      *
      * @param password The hashed password that needs to be combined with the
      * salt.
