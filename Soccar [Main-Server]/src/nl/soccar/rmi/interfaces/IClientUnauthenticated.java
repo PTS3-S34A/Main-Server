@@ -2,6 +2,8 @@ package nl.soccar.rmi.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import nl.soccar.library.Statistics;
 
 /**
  * Interface that specifies the methods that make it possible for a
@@ -49,5 +51,14 @@ public interface IClientUnauthenticated extends Remote {
      * the remote call of this method.
      */
     IClientAuthenticated checkPassword(String username, byte[] hashedPassword) throws RemoteException;
+
+    /**
+     * Gets the game statistics of all user from the persistency service.
+     *
+     * @return A collection of all game statistics.
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
+     */
+    ArrayList<Statistics> getAllStatistics() throws RemoteException;
 
 }
