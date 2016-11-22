@@ -49,7 +49,10 @@ public class Statistics implements Serializable {
      * @return Calculated games ratio, higher/equal than/to 0.
      */
     public Double getGamesRatio() {
-        return ((double) gamesWon - (double) gamesLost) / (double) gamesPlayed * 100.0D;
+        if (gamesPlayed > 0) {
+            return ((double) gamesWon - (double) gamesLost) / (double) gamesPlayed * 100.0D;
+        }
+        return 0.0D;
     }
 
     /**
