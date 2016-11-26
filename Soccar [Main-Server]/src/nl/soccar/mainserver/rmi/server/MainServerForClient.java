@@ -1,7 +1,8 @@
 package nl.soccar.mainserver.rmi.server;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.List;
+import nl.soccar.library.SessionData;
 import nl.soccar.library.Statistics;
 import nl.soccar.rmi.interfaces.IClientAuthenticated;
 import nl.soccar.rmi.interfaces.IClientUnauthenticated;
@@ -22,6 +23,7 @@ public class MainServerForClient extends MainServer implements IClientUnauthenti
      * the remote call of this method.
      */
     public MainServerForClient() throws RemoteException {
+        // Empty because the Sessions ArrayList and data repositories are instantiated in the MainServer superclass.
     }
 
     @Override
@@ -48,8 +50,13 @@ public class MainServerForClient extends MainServer implements IClientUnauthenti
     }
 
     @Override
-    public ArrayList<Statistics> getAllStatistics() throws RemoteException {
+    public List<Statistics> getAllStatistics() throws RemoteException {
         return super.getStatisticsRepository().getAllStatistics();
+    }
+
+    @Override
+    public List<SessionData> getAllSessions() throws RemoteException {
+        return super.getSessions();
     }
 
 }

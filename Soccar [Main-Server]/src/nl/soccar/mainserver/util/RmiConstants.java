@@ -8,13 +8,6 @@ package nl.soccar.mainserver.util;
 public class RmiConstants {
 
     /**
-     * Constructor that is intentionally marked private so a RmiConstants object
-     * can never be initiated outside this class.
-     */
-    private RmiConstants() {
-    }
-
-    /**
      * Binding name constants.
      */
     public static final String BINDING_NAME_CLIENT = "main_server_for_client";
@@ -25,5 +18,12 @@ public class RmiConstants {
      */
     public static final int PORT_NUMBER_CLIENT = 1044;
     public static final int PORT_NUMBER_GAME_SERVER = 1045;
+
+    /**
+     * Constructor that is intentionally marked private so a RmiConstants object
+     * can never be initiated outside this class.
+     */
+    private RmiConstants() {
+    }
 
 }

@@ -1,6 +1,7 @@
 package nl.soccar.mainserver.data.repository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import nl.soccar.library.Statistics;
@@ -40,9 +41,7 @@ public class StatisticsRepository extends Repository {
      * @param goals The amount of goals that need to be added to the player.
      */
     public void addGoals(String username, int goals) {
-        super.getPool().execute(() -> {
-            context.addGoals(username, goals);
-        });
+        super.getPool().execute(() -> context.addGoals(username, goals));
     }
 
     /**
@@ -54,9 +53,7 @@ public class StatisticsRepository extends Repository {
      * @param assists The amount of assists that need to be added to the player.
      */
     public void addAssists(String username, int assists) {
-        super.getPool().execute(() -> {
-            context.addAssists(username, assists);
-        });
+        super.getPool().execute(() -> context.addAssists(username, assists));
     }
 
     /**
@@ -67,9 +64,7 @@ public class StatisticsRepository extends Repository {
      * needs to be incremented.
      */
     public void incrementGamesWon(String username) {
-        super.getPool().execute(() -> {
-            context.incrementGamesWon(username);
-        });
+        super.getPool().execute(() -> context.incrementGamesWon(username));
     }
 
     /**
@@ -80,9 +75,7 @@ public class StatisticsRepository extends Repository {
      * needs to be incremented.
      */
     public void incrementGamesLost(String username) {
-        super.getPool().execute(() -> {
-            context.incrementGamesLost(username);
-        });
+        super.getPool().execute(() -> context.incrementGamesLost(username));
     }
 
     /**
@@ -93,9 +86,7 @@ public class StatisticsRepository extends Repository {
      * needs to be incremented.
      */
     public void incrementGamesPlayed(String username) {
-        super.getPool().execute(() -> {
-            context.incrementGamesPlayed(username);
-        });
+        super.getPool().execute(() -> context.incrementGamesPlayed(username));
     }
 
     /**
@@ -120,13 +111,15 @@ public class StatisticsRepository extends Repository {
      *
      * @return A collection of all game statistics.
      */
-    public ArrayList<Statistics> getAllStatistics() {
+    public List<Statistics> getAllStatistics() {
+        List<Statistics> statistics = new ArrayList<>();
         try {
-            Future<ArrayList<Statistics>> f = super.getPool().submit(() -> context.getAllStatistics());
-            return f.get();
+            Future<List<Statistics>> f = super.getPool().submit(() -> context.getAllStatistics());
+            statistics = f.get();
+            return statistics;
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.warn("An error occurred while submitting a callable in the getAllStatistics method.", e);
-            return null;
+            return statistics;
         }
     }
 

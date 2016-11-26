@@ -2,7 +2,8 @@ package nl.soccar.rmi.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.List;
+import nl.soccar.library.SessionData;
 import nl.soccar.library.Statistics;
 
 /**
@@ -59,6 +60,15 @@ public interface IClientUnauthenticated extends Remote {
      * @throws RemoteException Thrown when a communication error occurs during
      * the remote call of this method.
      */
-    ArrayList<Statistics> getAllStatistics() throws RemoteException;
+    List<Statistics> getAllStatistics() throws RemoteException;
+
+    /**
+     * Gets all running sessions.
+     *
+     * @return a collection of all running sessions.
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
+     */
+    List<SessionData> getAllSessions() throws RemoteException;
 
 }

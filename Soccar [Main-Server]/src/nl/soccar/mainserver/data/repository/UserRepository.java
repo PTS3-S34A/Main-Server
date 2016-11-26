@@ -58,9 +58,7 @@ public class UserRepository extends Repository {
      * the given username.
      */
     public void changePrivilege(String username, Privilege privilege) {
-        super.getPool().execute(() -> {
-            context.changePrivilege(username, privilege);
-        });
+        super.getPool().execute(() -> context.changePrivilege(username, privilege));
     }
 
     /**

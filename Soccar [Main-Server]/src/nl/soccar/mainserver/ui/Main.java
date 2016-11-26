@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 public class Main implements Runnable {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final String EXIT_STRING = "exit";
     private static Thread t;
 
     private Registry r;
@@ -75,7 +76,7 @@ public class Main implements Runnable {
             printDevider();
             while (true) {
                 String input = scanner.nextLine();
-                if (input.equalsIgnoreCase("exit")) {
+                if (input.equalsIgnoreCase(EXIT_STRING)) {
                     mainServerForClient.close();
                     mainServerForGameServer.close();
                     DatabaseUtilities.close();

@@ -3,6 +3,10 @@ package nl.soccar.mainserver.rmi.server;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import nl.soccar.library.SessionData;
 import nl.soccar.mainserver.data.context.StatisticsMySqlContext;
 import nl.soccar.mainserver.data.context.UserMySqlContext;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
@@ -20,6 +24,7 @@ public abstract class MainServer extends UnicastRemoteObject {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MainServer.class);
 
+    private final List<SessionData> sessions;
     private final UserRepository userRepository;
     private final StatisticsRepository statisticsRepository;
 
@@ -31,6 +36,7 @@ public abstract class MainServer extends UnicastRemoteObject {
      * the remote call of this method.
      */
     public MainServer() throws RemoteException {
+        sessions = new ArrayList<>();
         userRepository = new UserRepository(new UserMySqlContext());
         statisticsRepository = new StatisticsRepository(new StatisticsMySqlContext());
     }
@@ -48,6 +54,10 @@ public abstract class MainServer extends UnicastRemoteObject {
         } catch (NoSuchObjectException e) {
             LOGGER.error("Server could not be unexported.", e);
         }
+    }
+
+    public List<SessionData> getSessions() {
+        return Collections.unmodifiableList(sessions);
     }
 
     /**

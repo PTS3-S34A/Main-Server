@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.List;
 import nl.soccar.mainserver.util.DatabaseUtilities;
 import nl.soccar.library.Statistics;
 import org.slf4j.Logger;
@@ -105,8 +106,8 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
     }
 
     @Override
-    public ArrayList<Statistics> getAllStatistics() {
-        ArrayList<Statistics> s = new ArrayList<>();
+    public List<Statistics> getAllStatistics() {
+        List<Statistics> s = new ArrayList<>();
 
         try {
             PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT u.username, s.goals, s.assists, s.games_won, s.games_lost, s.games_played FROM User u, Statistics s WHERE u.id = s.user_id;");
@@ -116,7 +117,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
                 s.add(new Statistics(rs.getString("username"), rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played")));
             }
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while retrieving all statistics from the database.");
+            LOGGER.warn("An error occurred while retrieving all statistics from the database.", e);
         }
 
         return s;

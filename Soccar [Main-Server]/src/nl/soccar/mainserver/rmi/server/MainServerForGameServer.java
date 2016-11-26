@@ -18,6 +18,7 @@ public class MainServerForGameServer extends MainServer implements IGameServer {
      * the remote call of this method.
      */
     public MainServerForGameServer() throws RemoteException {
+        // Empty because the Sessions ArrayList and data repositories are instantiated in the MainServer superclass.
     }
 
     @Override
