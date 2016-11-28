@@ -1,4 +1,4 @@
-package nl.soccar.library;
+package nl.soccar.rmi;
 
 /**
  * A SessionData is a container object that keeps track of all info of a running

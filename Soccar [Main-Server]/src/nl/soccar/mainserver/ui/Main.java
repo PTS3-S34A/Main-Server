@@ -2,14 +2,8 @@ package nl.soccar.mainserver.ui;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.Scanner;
-import nl.soccar.mainserver.rmi.server.MainServerForClient;
-import nl.soccar.mainserver.rmi.server.MainServerForGameServer;
-import nl.soccar.mainserver.util.DatabaseUtilities;
-import nl.soccar.mainserver.util.RmiConstants;
+import nl.soccar.mainserver.rmi.server.MainServerController;
 import org.apache.log4j.BasicConfigurator;
 import org.slf4j.LoggerFactory;
 
@@ -22,48 +16,30 @@ public class Main implements Runnable {
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
     private static final String EXIT_STRING = "exit";
+
+    private final MainServerController controller;
     private static Thread t;
 
-    private Registry r;
-    private MainServerForClient mainServerForClient;
-    private MainServerForGameServer mainServerForGameServer;
-
     /**
-     * Constructor used for initiation of a Main object. Network communication
-     * ports are being registered and stub-objects are created and bound for RMI
-     * network communication.
+     * Constructor used for initiation of a Main object. The logger is being
+     * configured, the welcome message is printed and the MainServerController
+     * is instantiated.
      */
     public Main() {
-        try {
-            DatabaseUtilities.init();
+        BasicConfigurator.configure();
 
-            mainServerForClient = new MainServerForClient();
-            r = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_CLIENT);
-            r.rebind(RmiConstants.BINDING_NAME_CLIENT, mainServerForClient);
-            LOGGER.info("Registered MainServerForClient binding.");
+        printWelcomeMessage();
 
-            mainServerForGameServer = new MainServerForGameServer();
-            r = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_GAME_SERVER);
-            r.rebind(RmiConstants.BINDING_NAME_GAME_SERVER, mainServerForGameServer);
-            LOGGER.info("Registered MainServerForGameServer binding.");
-
-        } catch (RemoteException e) {
-            LOGGER.error("An error occurred while locating and/or binding the registry.", e);
-        }
+        controller = new MainServerController();
     }
 
     /**
-     * Start the application, prints the welcome message, configures the logger
-     * and starts a new thread that listens for keyboard input for closing the
-     * application.
+     * Start the application and starts a new thread that listens for keyboard
+     * input for closing the application.
      *
      * @param args Commandline arguments that are not used.
      */
     public static void main(String[] args) {
-        printWelcomeMessage();
-
-        BasicConfigurator.configure();
-
         t = new Thread(new Main());
         t.start();
     }
@@ -72,14 +48,11 @@ public class Main implements Runnable {
     @Override
     public void run() {
         try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("TYPE 'EXIT' TO STOP THE SERVER");
             printDevider();
             while (true) {
                 String input = scanner.nextLine();
                 if (input.equalsIgnoreCase(EXIT_STRING)) {
-                    mainServerForClient.close();
-                    mainServerForGameServer.close();
-                    DatabaseUtilities.close();
+                    controller.close();
                     break;
                 }
             }
@@ -94,6 +67,8 @@ public class Main implements Runnable {
         printDevider();
         System.out.println("MAIN SERVER STARTED");
         printIpAddress();
+        System.out.println("TYPE 'EXIT' TO STOP THE SERVER");
+        printDevider();
     }
 
     /**
@@ -111,7 +86,7 @@ public class Main implements Runnable {
      * Prints a deviding line of dashes.
      */
     private static void printDevider() {
-        System.out.println("------------------------------");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
     }
 
 }

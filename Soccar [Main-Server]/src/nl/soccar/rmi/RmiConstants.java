@@ -1,4 +1,4 @@
-package nl.soccar.mainserver.util;
+package nl.soccar.rmi;
 
 /**
  * Class that constains constant values regarding to RMI network communication.

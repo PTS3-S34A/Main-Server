@@ -1,6 +1,10 @@
 package nl.soccar.mainserver.rmi.server;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import nl.soccar.mainserver.data.repository.StatisticsRepository;
+import nl.soccar.mainserver.data.repository.UserRepository;
+import nl.soccar.rmi.SessionData;
 import nl.soccar.rmi.interfaces.IGameServer;
 
 /**
@@ -14,11 +18,16 @@ public class MainServerForGameServer extends MainServer implements IGameServer {
     /**
      * Constructor used for instantiation of a MainServerForGameServer object.
      *
+     * @param sessions The collection of all SessionData objects.
+     * @param userRepository the UserRepository that is used for manipulation of
+     * user data in the persistency service.
+     * @param statisticsRepository the StatisticsRepository that is used for
+     * manipulation of statistics data in the persistency service.
      * @throws RemoteException Thrown when a communication error occurs during
      * the remote call of this method.
      */
-    public MainServerForGameServer() throws RemoteException {
-        // Empty because the Sessions ArrayList and data repositories are instantiated in the MainServer superclass.
+    public MainServerForGameServer(List<SessionData> sessions, UserRepository userRepository, StatisticsRepository statisticsRepository) throws RemoteException {
+        super(sessions, userRepository, statisticsRepository);
     }
 
     @Override
