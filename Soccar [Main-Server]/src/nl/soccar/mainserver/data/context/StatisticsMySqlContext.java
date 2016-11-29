@@ -6,10 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.soccar.mainserver.util.DatabaseUtilities;
 import nl.soccar.library.Statistics;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import nl.soccar.mainserver.data.contract.IStatisticsDataContract;
 
 /**
@@ -20,7 +21,7 @@ import nl.soccar.mainserver.data.contract.IStatisticsDataContract;
  */
 public class StatisticsMySqlContext implements IStatisticsDataContract {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsMySqlContext.class);
+    private static final Logger LOGGER = Logger.getLogger(StatisticsMySqlContext.class.getSimpleName());
 
     @Override
     public void addGoals(String username, int goals) {
@@ -30,7 +31,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             cs.setInt(2, goals);
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while adding goals to a statistics record in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while adding goals to a statistics record in the database.", e);
         }
     }
 
@@ -42,7 +43,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             cs.setInt(2, assists);
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while adding assists to a statistics record in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while adding assists to a statistics record in the database.", e);
         }
     }
 
@@ -53,7 +54,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             cs.setString(1, username);
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while incrementing the amount of games won in a statistics record in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while incrementing the amount of games won in a statistics record in the database.", e);
         }
     }
 
@@ -64,7 +65,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             cs.setString(1, username);
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while incrementing the amount of games lost in a statistics record in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while incrementing the amount of games lost in a statistics record in the database.", e);
         }
     }
 
@@ -75,13 +76,13 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             cs.setString(1, username);
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while incrementing the amount of games played in a statistics record in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while incrementing the amount of games played in a statistics record in the database.", e);
         }
     }
 
     @Override
     public Statistics getStatistics(String username) {
-        Statistics s = null;
+        Statistics statistics = null;
 
         try {
             CallableStatement cs = DatabaseUtilities.prepareCall("{? = call get_user_id(?)}");
@@ -95,31 +96,31 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                s = new Statistics(username, rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played"));
+                statistics = new Statistics(username, rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played"));
             }
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while retrieving the statistics of a player from the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while retrieving the statistics of a player from the database.", e);
         }
 
-        return s;
+        return statistics;
     }
 
     @Override
-    public ArrayList<Statistics> getAllStatistics() {
-        ArrayList<Statistics> s = new ArrayList<>();
+    public List<Statistics> getAllStatistics() {
+        List<Statistics> statistics = new ArrayList<>();
 
         try {
             PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT u.username, s.goals, s.assists, s.games_won, s.games_lost, s.games_played FROM User u, Statistics s WHERE u.id = s.user_id;");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                s.add(new Statistics(rs.getString("username"), rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played")));
+                statistics.add(new Statistics(rs.getString("username"), rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played")));
             }
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while retrieving all statistics from the database.");
+            LOGGER.log(Level.WARNING, "An error occurred while retrieving all statistics from the database.", e);
         }
 
-        return s;
+        return statistics;
     }
 
 }

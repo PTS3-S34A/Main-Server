@@ -9,7 +9,7 @@ import java.rmi.RemoteException;
  *
  * @author PTS34A
  */
-public interface IGameServer extends Remote {
+public interface IMainServerForGameServer extends Remote {
 
     /**
      * Adds a given amount of goals to the given player stored in the

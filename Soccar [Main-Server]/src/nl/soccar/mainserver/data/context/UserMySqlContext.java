@@ -6,11 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.soccar.library.enumeration.Privilege;
 import nl.soccar.mainserver.util.DatabaseUtilities;
 import nl.soccar.mainserver.util.PasswordUtilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import nl.soccar.mainserver.data.contract.IUserDataContract;
 
 /**
@@ -21,7 +21,7 @@ import nl.soccar.mainserver.data.contract.IUserDataContract;
  */
 public class UserMySqlContext implements IUserDataContract {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserMySqlContext.class);
+    private static final Logger LOGGER = Logger.getLogger(UserMySqlContext.class.getSimpleName());
 
     @Override
     public boolean add(String username, byte[] password) {
@@ -36,7 +36,7 @@ public class UserMySqlContext implements IUserDataContract {
             cs.execute();
             return true;
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while adding a new user to the database. It is possible that this happened because of a database constaint that prevents duplicate usernames.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while adding a new user to the database. It is possible that this happened because of a database constaint that prevents duplicate usernames.", e);
             return false;
         }
     }
@@ -49,7 +49,7 @@ public class UserMySqlContext implements IUserDataContract {
             cs.setString(2, privilege.toString());
             cs.execute();
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while changing the privilege of a user in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while changing the privilege of a user in the database.", e);
         }
     }
 
@@ -62,7 +62,7 @@ public class UserMySqlContext implements IUserDataContract {
             cs.execute();
             return cs.getBoolean(1);
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while checking if a uses exists in the database.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while checking if a uses exists in the database.", e);
             return false;
         }
     }
@@ -82,7 +82,7 @@ public class UserMySqlContext implements IUserDataContract {
                 salt = rs.getBytes("password_salt");
             }
         } catch (SQLException e) {
-            LOGGER.warn("An error occurred while authenticating a user.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while authenticating a user.", e);
         }
 
         byte[] hash = PasswordUtilities.addSalt(password, salt);

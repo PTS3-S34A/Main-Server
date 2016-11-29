@@ -8,8 +8,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utility class that database access provides methods for initializing, closing
@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DatabaseUtilities {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUtilities.class);
+    private static final Logger LOGGER = Logger.getLogger(DatabaseUtilities.class.getSimpleName());
 
     private static Connection connection;
 
@@ -40,7 +40,7 @@ public class DatabaseUtilities {
         try (FileInputStream input = new FileInputStream("database.prop")) {
             props.load(input);
         } catch (IOException e) {
-            LOGGER.error("An error occurred while loading the database properties file.", e);
+            LOGGER.log(Level.SEVERE, "An error occurred while loading the database properties file.", e);
         }
 
         try {
@@ -54,7 +54,7 @@ public class DatabaseUtilities {
                     props.getProperty("password"));
             LOGGER.info("Database connection established.");
         } catch (SQLException e) {
-            LOGGER.error("An error occurred while establishing the database connection.", e);
+            LOGGER.log(Level.SEVERE, "An error occurred while establishing the database connection.", e);
         }
     }
 
@@ -67,7 +67,7 @@ public class DatabaseUtilities {
                 connection.close();
                 LOGGER.info("Database connection closed.");
             } catch (SQLException e) {
-                LOGGER.error("An error occurred while closing the database connection.", e);
+                LOGGER.log(Level.SEVERE, "An error occurred while closing the database connection.", e);
             }
         }
     }

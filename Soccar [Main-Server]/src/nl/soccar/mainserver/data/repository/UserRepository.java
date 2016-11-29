@@ -2,9 +2,10 @@ package nl.soccar.mainserver.data.repository;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.soccar.library.enumeration.Privilege;
 import nl.soccar.mainserver.data.contract.IUserDataContract;
-import org.slf4j.LoggerFactory;
 
 /**
  * A UserRepository object is used for manipulation of user data in a
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
  */
 public class UserRepository extends Repository {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(UserRepository.class);
+    private static final Logger LOGGER = Logger.getLogger(UserRepository.class.getSimpleName());
 
     private final IUserDataContract context;
 
@@ -43,9 +44,9 @@ public class UserRepository extends Repository {
             Future<Boolean> f = super.getPool().submit(() -> context.add(username, password));
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.warn("An error occurred while submitting a callable in the add method.", e);
-            return false;
+            LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the add method.", e);
         }
+        return false;
     }
 
     /**
@@ -58,9 +59,7 @@ public class UserRepository extends Repository {
      * the given username.
      */
     public void changePrivilege(String username, Privilege privilege) {
-        super.getPool().execute(() -> {
-            context.changePrivilege(username, privilege);
-        });
+        super.getPool().execute(() -> context.changePrivilege(username, privilege));
     }
 
     /**
@@ -76,9 +75,9 @@ public class UserRepository extends Repository {
             Future<Boolean> f = super.getPool().submit(() -> context.checkIfExists(username));
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.warn("An error occurred while submitting a callable in the checkIfExists method.", e);
-            return false;
+            LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the checkIfExists method.", e);
         }
+        return false;
     }
 
     /**
@@ -96,9 +95,9 @@ public class UserRepository extends Repository {
             Future<Boolean> f = super.getPool().submit(() -> context.checkPassword(username, hashedPassword));
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.warn("An error occurred while submitting a callable in the checkPassword method.", e);
-            return false;
+            LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the checkPassword method.", e);
         }
+        return false;
     }
 
 }

@@ -2,7 +2,6 @@ package nl.soccar.rmi.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import nl.soccar.library.Statistics;
 
 /**

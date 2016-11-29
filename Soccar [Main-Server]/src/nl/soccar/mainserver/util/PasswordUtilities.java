@@ -3,8 +3,8 @@ package nl.soccar.mainserver.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Utilities class for password authentication that provides methods for
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PasswordUtilities {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtilities.class);
+    private static final Logger LOGGER = Logger.getLogger(PasswordUtilities.class.getSimpleName());
 
     /**
      * Constructor that is intentionally marked private so a PasswordUtilities
@@ -35,7 +35,7 @@ public class PasswordUtilities {
             SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
             sr.nextBytes(salt);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("An error occurred while generating a salt.", e);
+            LOGGER.log(Level.SEVERE, "An error occurred while generating a salt.", e);
         }
 
         return salt;
@@ -60,7 +60,7 @@ public class PasswordUtilities {
             md.update(salt);
             hash = md.digest();
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("An error occurred while adding the salt to a hashed password.", e);
+            LOGGER.log(Level.SEVERE, "An error occurred while adding the salt to a hashed password.", e);
         }
 
         return hash;

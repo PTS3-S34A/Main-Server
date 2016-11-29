@@ -1,6 +1,6 @@
 package nl.soccar.mainserver.data.contract;
 
-import java.util.ArrayList;
+import java.util.List;
 import nl.soccar.library.Statistics;
 
 /**
@@ -72,6 +72,6 @@ public interface IStatisticsDataContract {
      *
      * @return A collection of all game statistics.
      */
-    ArrayList<Statistics> getAllStatistics();
+    List<Statistics> getAllStatistics();
 
 }
