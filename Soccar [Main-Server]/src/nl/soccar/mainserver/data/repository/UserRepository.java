@@ -45,8 +45,8 @@ public class UserRepository extends Repository {
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the add method.", e);
-            return false;
         }
+        return false;
     }
 
     /**
@@ -76,8 +76,8 @@ public class UserRepository extends Repository {
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the checkIfExists method.", e);
-            return false;
         }
+        return false;
     }
 
     /**
@@ -96,8 +96,8 @@ public class UserRepository extends Repository {
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the checkPassword method.", e);
-            return false;
         }
+        return false;
     }
 
 }

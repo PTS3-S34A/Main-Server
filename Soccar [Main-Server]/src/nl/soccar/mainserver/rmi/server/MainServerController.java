@@ -70,22 +70,32 @@ public class MainServerController {
         }
     }
 
-    public void connectGameServers() {
+    /**
+     * Connects the main server to the game server(s) IP-address(es) that is/are
+     * listed in the gameserver.properties file.
+     *
+     * @return True when the main server connected succesfully to the
+     * games(servers) listed in the gameserver.properties file.
+     */
+    public boolean connectGameServers() {
         Properties props = new Properties();
 
         try (FileInputStream input = new FileInputStream("gameserver.prop")) {
             props.load(input);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while loading the gameerver properties file.", e);
+            return false;
         }
 
         try {
-            Registry r = LocateRegistry.getRegistry(props.getProperty("gameserver1"), RmiConstants.PORT_NUMBER_GAME_SERVER);
+            r = LocateRegistry.getRegistry(props.getProperty("gameserver1"), RmiConstants.PORT_NUMBER_GAME_SERVER);
             gameServerForMainServer = (IGameServerForMainServer) r.lookup(RmiConstants.BINDING_NAME_GAME_SERVER_FOR_MAIN_SERVER);
         } catch (RemoteException | NotBoundException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while connecting to the Game server through RMI.", e);
-            System.out.println(e);
+            return false;
         }
+
+        return true;
     }
 
     /**

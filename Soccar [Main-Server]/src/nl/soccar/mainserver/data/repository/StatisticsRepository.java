@@ -103,8 +103,9 @@ public class StatisticsRepository extends Repository {
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the getStatistics method.", e);
-            return null;
         }
+        
+        return null;
     }
 
     /**
@@ -115,13 +116,13 @@ public class StatisticsRepository extends Repository {
     public List<Statistics> getAllStatistics() {
         List<Statistics> statistics = new ArrayList<>();
         try {
-            Future<List<Statistics>> f = super.getPool().submit(() -> context.getAllStatistics());
+            Future<List<Statistics>> f = super.getPool().submit(context::getAllStatistics);
             statistics = f.get();
-            return statistics;
         } catch (InterruptedException | ExecutionException e) {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the getAllStatistics method.", e);
-            return statistics;
         }
+        
+        return statistics;
     }
 
 }

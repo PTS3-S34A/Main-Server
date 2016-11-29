@@ -82,7 +82,7 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
 
     @Override
     public Statistics getStatistics(String username) {
-        Statistics s = null;
+        Statistics statistics = null;
 
         try {
             CallableStatement cs = DatabaseUtilities.prepareCall("{? = call get_user_id(?)}");
@@ -96,31 +96,31 @@ public class StatisticsMySqlContext implements IStatisticsDataContract {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                s = new Statistics(username, rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played"));
+                statistics = new Statistics(username, rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played"));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while retrieving the statistics of a player from the database.", e);
         }
 
-        return s;
+        return statistics;
     }
 
     @Override
     public List<Statistics> getAllStatistics() {
-        List<Statistics> s = new ArrayList<>();
+        List<Statistics> statistics = new ArrayList<>();
 
         try {
             PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT u.username, s.goals, s.assists, s.games_won, s.games_lost, s.games_played FROM User u, Statistics s WHERE u.id = s.user_id;");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                s.add(new Statistics(rs.getString("username"), rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played")));
+                statistics.add(new Statistics(rs.getString("username"), rs.getInt("goals"), rs.getInt("assists"), rs.getInt("games_won"), rs.getInt("games_lost"), rs.getInt("games_played")));
             }
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while retrieving all statistics from the database.", e);
         }
 
-        return s;
+        return statistics;
     }
 
 }

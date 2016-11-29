@@ -21,7 +21,7 @@ import nl.soccar.rmi.interfaces.IGameServerForMainServer;
  * @author PTS34A
  */
 public class MainServerForClient extends MainServer implements IClientUnauthenticated, IClientAuthenticated {
-    
+
     private final IGameServerForMainServer gameServerForMainServer;
 
     /**
@@ -32,12 +32,14 @@ public class MainServerForClient extends MainServer implements IClientUnauthenti
      * user data in the persistency service.
      * @param statisticsRepository the StatisticsRepository that is used for
      * manipulation of statistics data in the persistency service.
+     * @param gameServerForMainServer The game server RMI-stub object that is
+     * used to communicate with the game server.
      * @throws RemoteException Thrown when a communication error occurs during
      * the remote call of this method.
      */
     public MainServerForClient(List<SessionData> sessions, UserRepository userRepository, StatisticsRepository statisticsRepository, IGameServerForMainServer gameServerForMainServer) throws RemoteException {
         super(sessions, userRepository, statisticsRepository);
-        
+
         this.gameServerForMainServer = gameServerForMainServer;
     }
 

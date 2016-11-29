@@ -24,7 +24,7 @@ public abstract class Repository {
      */
     public Repository() {
         pool = Executors.newCachedThreadPool();
-        LOGGER.log(Level.INFO, "Threadpool {0} initialized.", this.getClass().getSimpleName());
+        LOGGER.log(Level.INFO, "Threadpool {0} initialized.", getClass().getSimpleName());
     }
 
     /**
@@ -32,7 +32,7 @@ public abstract class Repository {
      */
     public void close() {
         pool.shutdown();
-        LOGGER.log(Level.INFO, "Threadpool {0} shut down.", this.getClass().getSimpleName());
+        LOGGER.log(Level.INFO, "Threadpool {0} shut down.", getClass().getSimpleName());
     }
 
     /**

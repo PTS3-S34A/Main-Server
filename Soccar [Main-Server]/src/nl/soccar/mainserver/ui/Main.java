@@ -15,7 +15,8 @@ import nl.soccar.mainserver.rmi.server.MainServerController;
 public class Main implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getSimpleName());
-    private static final String EXIT_STRING = "exit";
+    private static final String COMMAND_CONNECT_GAMESERVERS = "connect";
+    private static final String COMMAND_EXIT = "exit";
 
     private final MainServerController controller;
     private static Thread t;
@@ -27,7 +28,6 @@ public class Main implements Runnable {
      */
     public Main() {
         printWelcomeMessage();
-
         controller = new MainServerController();
     }
 
@@ -49,12 +49,31 @@ public class Main implements Runnable {
             printDevider();
             while (true) {
                 String input = scanner.nextLine();
-                if (input.equalsIgnoreCase(EXIT_STRING)) {
-                    controller.close();
+                if (processInput(input)) {
                     break;
                 }
             }
         }
+    }
+
+    /**
+     * Processes the input that the user types in the command line.
+     *
+     * @param input The input that the user types in the command line.
+     * @return True when the exit command is recognized.
+     */
+    private boolean processInput(String input) {
+        if (input.equalsIgnoreCase(COMMAND_EXIT)) {
+            controller.close();
+            return true;
+        } else if (input.equalsIgnoreCase(COMMAND_CONNECT_GAMESERVERS)) {
+            if (controller.connectGameServers()) {
+                LOGGER.log(Level.INFO, "Game server(s) connected successfully.");
+            } else {
+                LOGGER.log(Level.WARNING, "Game servers could not be connected successfully.");
+            }
+        }
+        return false;
     }
 
     /**
