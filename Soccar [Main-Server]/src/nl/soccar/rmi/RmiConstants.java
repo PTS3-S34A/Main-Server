@@ -10,8 +10,9 @@ public class RmiConstants {
     /**
      * Binding name constants.
      */
-    public static final String BINDING_NAME_CLIENT = "main_server_for_client";
-    public static final String BINDING_NAME_GAME_SERVER = "main_server_for_game_server";
+    public static final String BINDING_NAME_MAIN_SERVER_FOR_CLIENT = "main_server_for_client";
+    public static final String BINDING_NAME_MAIN_SERVER_FOR_GAME_SERVER = "main_server_for_game_server";
+    public static final String BINDING_NAME_GAME_SERVER_FOR_MAIN_SERVER = "game_server_for_main_server";
 
     /**
      * Port number constants.
