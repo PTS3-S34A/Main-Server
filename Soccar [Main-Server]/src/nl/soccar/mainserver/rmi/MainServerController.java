@@ -1,4 +1,4 @@
-package nl.soccar.rmi;
+package nl.soccar.mainserver.rmi;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import nl.soccar.mainserver.data.context.UserMySqlContext;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 import nl.soccar.mainserver.util.DatabaseUtilities;
+import nl.soccar.rmi.RmiConstants;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
 
 /**
