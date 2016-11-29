@@ -21,6 +21,8 @@ public class DatabaseUtilities {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseUtilities.class.getSimpleName());
 
+    private static final String LOCATION_PROPERTIES = "database.properties";
+
     private static Connection connection;
 
     /**
@@ -37,7 +39,7 @@ public class DatabaseUtilities {
     public static void init() {
         Properties props = new Properties();
 
-        try (FileInputStream input = new FileInputStream("database.prop")) {
+        try (FileInputStream input = new FileInputStream(LOCATION_PROPERTIES)) {
             props.load(input);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while loading the database properties file.", e);

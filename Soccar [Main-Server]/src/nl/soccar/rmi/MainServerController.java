@@ -30,6 +30,8 @@ public class MainServerController {
 
     private static final Logger LOGGER = Logger.getLogger(MainServerController.class.getSimpleName());
 
+    private static final String LOCATION_PROPERTIES = "gameserver.properties";
+
     private Registry registry;
     private MainServerForClient mainServerForClient;
     private MainServerForGameServer mainServerForGameServer;
@@ -79,7 +81,7 @@ public class MainServerController {
     public boolean connectGameServers() {
         Properties props = new Properties();
 
-        try (FileInputStream input = new FileInputStream("gameserver.prop")) {
+        try (FileInputStream input = new FileInputStream(LOCATION_PROPERTIES)) {
             props.load(input);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while loading the gameerver properties file.", e);
@@ -105,14 +107,14 @@ public class MainServerController {
         mainServerForGameServer.close();
         DatabaseUtilities.close();
     }
-    
+
     /**
      * Gets the collection of all sessions (synchronized).
-     * 
+     *
      * @return A collection of all sessions (synchronized).
      */
     public List<SessionData> getSessions() {
-        synchronized(sessions) {
+        synchronized (sessions) {
             return sessions;
         }
     }
