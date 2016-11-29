@@ -3,9 +3,9 @@ package nl.soccar.mainserver.ui;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.soccar.mainserver.rmi.server.MainServerController;
-import org.apache.log4j.BasicConfigurator;
-import org.slf4j.LoggerFactory;
 
 /**
  * Entry point of the Main server application for te Soccar game.
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Main implements Runnable {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getSimpleName());
     private static final String EXIT_STRING = "exit";
 
     private final MainServerController controller;
@@ -26,8 +26,6 @@ public class Main implements Runnable {
      * is instantiated.
      */
     public Main() {
-        BasicConfigurator.configure();
-
         printWelcomeMessage();
 
         controller = new MainServerController();
@@ -78,7 +76,7 @@ public class Main implements Runnable {
         try {
             System.out.printf("IP ADDRESS: %s %n", InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            LOGGER.error("An error occurred while printing the IP address.", e);
+            LOGGER.log(Level.SEVERE, "An error occurred while printing the IP address.", e);
         }
     }
 
