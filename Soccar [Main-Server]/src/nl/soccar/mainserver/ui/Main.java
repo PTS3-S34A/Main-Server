@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.soccar.rmi.MainServerController;
+import nl.soccar.mainserver.rmi.MainServerController;
 
 /**
  * Entry point of the Main server application for te Soccar game.

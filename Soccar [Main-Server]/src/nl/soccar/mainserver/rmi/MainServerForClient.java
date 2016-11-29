@@ -1,4 +1,4 @@
-package nl.soccar.rmi;
+package nl.soccar.mainserver.rmi;
 
 import java.rmi.RemoteException;
 import java.util.List;
