@@ -28,8 +28,7 @@ public class UserMySqlContext implements IUserDataContract {
         byte[] salt = PasswordUtilities.generateSalt();
         byte[] hash = PasswordUtilities.addSalt(password, salt);
 
-        try {
-            CallableStatement cs = DatabaseUtilities.prepareCall("{call add_user(?, ?, ?)}");
+        try (CallableStatement cs = DatabaseUtilities.prepareCall("{call add_user(?, ?, ?)}")) {
             cs.setString(1, username);
             cs.setBytes(2, hash);
             cs.setBytes(3, salt);
@@ -37,16 +36,16 @@ public class UserMySqlContext implements IUserDataContract {
             return true;
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while adding a new user to the database. It is possible that this happened because of a database constaint that prevents duplicate usernames.", e);
-            return false;
         }
+
+        return false;
     }
 
     @Override
     public void changePrivilege(String username, Privilege privilege) {
-        try {
-            CallableStatement cs = DatabaseUtilities.prepareCall("{call change_privilege(?, ?)}");
+        try (CallableStatement cs = DatabaseUtilities.prepareCall("{call change_privilege(?, ?)}")) {
             cs.setString(1, username);
-            cs.setString(2, privilege.toString());
+            cs.setString(2, privilege.name());
             cs.execute();
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while changing the privilege of a user in the database.", e);
@@ -55,16 +54,16 @@ public class UserMySqlContext implements IUserDataContract {
 
     @Override
     public boolean checkIfExists(String username) {
-        try {
-            CallableStatement cs = DatabaseUtilities.prepareCall("{? = call check_user_exists(?)}");
+        try (CallableStatement cs = DatabaseUtilities.prepareCall("{? = call check_user_exists(?)}")) {
             cs.registerOutParameter(1, Types.BOOLEAN);
             cs.setString(2, username);
             cs.execute();
             return cs.getBoolean(1);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while checking if a uses exists in the database.", e);
-            return false;
         }
+
+        return false;
     }
 
     @Override
@@ -72,14 +71,14 @@ public class UserMySqlContext implements IUserDataContract {
         byte[] storedHash = new byte[64];
         byte[] salt = new byte[16];
 
-        try {
-            PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT password, password_salt FROM User WHERE username = ?");
+        try (PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT password, password_salt FROM User WHERE username = ?")) {
             ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                storedHash = rs.getBytes("password");
-                salt = rs.getBytes("password_salt");
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    storedHash = rs.getBytes("password");
+                    salt = rs.getBytes("password_salt");
+                }
             }
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while authenticating a user.", e);
