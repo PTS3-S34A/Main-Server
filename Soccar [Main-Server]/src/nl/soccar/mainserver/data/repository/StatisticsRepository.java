@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import nl.soccar.library.Statistics;
 import nl.soccar.mainserver.data.contract.IStatisticsDataContract;
-import org.slf4j.LoggerFactory;
 
 /**
  * A StatisticsRepository object is used for manipulation of statistics data in
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StatisticsRepository extends Repository {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(StatisticsRepository.class);
+    private static final Logger LOGGER = Logger.getLogger(StatisticsRepository.class.getSimpleName());
 
     private final IStatisticsDataContract context;
 
@@ -101,7 +102,7 @@ public class StatisticsRepository extends Repository {
             Future<Statistics> f = super.getPool().submit(() -> context.getStatistics(username));
             return f.get();
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.warn("An error occurred while submitting a callable in the getStatistics method.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the getStatistics method.", e);
             return null;
         }
     }
@@ -118,7 +119,7 @@ public class StatisticsRepository extends Repository {
             statistics = f.get();
             return statistics;
         } catch (InterruptedException | ExecutionException e) {
-            LOGGER.warn("An error occurred while submitting a callable in the getAllStatistics method.", e);
+            LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the getAllStatistics method.", e);
             return statistics;
         }
     }

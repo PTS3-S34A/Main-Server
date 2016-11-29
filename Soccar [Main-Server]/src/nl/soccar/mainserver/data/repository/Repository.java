@@ -2,7 +2,8 @@ package nl.soccar.mainserver.data.repository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Astract class that serves as base for all data repositories. It provides a
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Repository {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(Repository.class);
+    private static final Logger LOGGER = Logger.getLogger(Repository.class.getSimpleName());
 
     private final ExecutorService pool;
 
@@ -23,7 +24,7 @@ public abstract class Repository {
      */
     public Repository() {
         pool = Executors.newCachedThreadPool();
-        LOGGER.info("Threadpool " + this.getClass().getSimpleName() + " initialized.");
+        LOGGER.log(Level.INFO, "Threadpool {0} initialized.", this.getClass().getSimpleName());
     }
 
     /**
@@ -31,7 +32,7 @@ public abstract class Repository {
      */
     public void close() {
         pool.shutdown();
-        LOGGER.info("Threadpool " + this.getClass().getSimpleName() + " shut down.");
+        LOGGER.log(Level.INFO, "Threadpool {0} shut down.", this.getClass().getSimpleName());
     }
 
     /**
