@@ -1,4 +1,4 @@
-package nl.soccar.mainserver.rmi.server;
+package nl.soccar.rmi;
 
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
@@ -14,18 +14,19 @@ import nl.soccar.mainserver.data.repository.UserRepository;
  *
  * @author PTS34A
  */
-public abstract class MainServer extends UnicastRemoteObject {
+public abstract class GeneralMainServer extends UnicastRemoteObject {
 
-    private static final Logger LOGGER = Logger.getLogger(MainServer.class.getSimpleName());
+    private static final Logger LOGGER = Logger.getLogger(GeneralMainServer.class.getSimpleName());
 
-    private final List<SessionData> sessions;
+    private final MainServerController controller;
     private final UserRepository userRepository;
     private final StatisticsRepository statisticsRepository;
 
     /**
      * Constructor that serves as base for all MainServer implementations.
      *
-     * @param sessions The collection of all SessionData objects.
+     * @param controller The MainServerController that is used to retrieve the
+     * list of sessions.
      * @param userRepository the UserRepository that is used for manipulation of
      * user data in the persistency service.
      * @param statisticsRepository the StatisticsRepository that is used for
@@ -33,8 +34,8 @@ public abstract class MainServer extends UnicastRemoteObject {
      * @throws RemoteException Thrown when a communication error occurs during
      * the remote call of this method.
      */
-    public MainServer(List<SessionData> sessions, UserRepository userRepository, StatisticsRepository statisticsRepository) throws RemoteException {
-        this.sessions = sessions;
+    public GeneralMainServer(MainServerController controller, UserRepository userRepository, StatisticsRepository statisticsRepository) throws RemoteException {
+        this.controller = controller;
         this.userRepository = userRepository;
         this.statisticsRepository = statisticsRepository;
     }
@@ -42,7 +43,7 @@ public abstract class MainServer extends UnicastRemoteObject {
     /**
      * Unexports this RMI-stub object.
      */
-    public void close() {
+    public final void close() {
         try {
             UnicastRemoteObject.unexportObject(this, true);
             LOGGER.log(Level.INFO, "Unregistered {0} binding.", this.getClass().getSimpleName());
@@ -56,8 +57,8 @@ public abstract class MainServer extends UnicastRemoteObject {
      *
      * @return A collection of all SessionData objects.
      */
-    public List<SessionData> getSessions() {
-        return sessions;
+    public final List<SessionData> getSessions() {
+        return controller.getSessions();
     }
 
     /**
@@ -66,7 +67,7 @@ public abstract class MainServer extends UnicastRemoteObject {
      *
      * @return The user data repository.
      */
-    public UserRepository getUserRepository() {
+    public final UserRepository getUserRepository() {
         return userRepository;
     }
 
@@ -76,7 +77,7 @@ public abstract class MainServer extends UnicastRemoteObject {
      *
      * @return The statistics data repository..
      */
-    public StatisticsRepository getStatisticsRepository() {
+    public final StatisticsRepository getStatisticsRepository() {
         return statisticsRepository;
     }
 

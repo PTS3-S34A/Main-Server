@@ -1,4 +1,4 @@
-package nl.soccar.mainserver.rmi.server;
+package nl.soccar.rmi;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import nl.soccar.mainserver.data.context.UserMySqlContext;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 import nl.soccar.mainserver.util.DatabaseUtilities;
-import nl.soccar.rmi.RmiConstants;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
 
 /**
@@ -31,7 +30,7 @@ public class MainServerController {
 
     private static final Logger LOGGER = Logger.getLogger(MainServerController.class.getSimpleName());
 
-    private Registry r;
+    private Registry registry;
     private MainServerForClient mainServerForClient;
     private MainServerForGameServer mainServerForGameServer;
     private IGameServerForMainServer gameServerForMainServer;
@@ -55,14 +54,14 @@ public class MainServerController {
         statisticsRepository = new StatisticsRepository(new StatisticsMySqlContext());
 
         try {
-            mainServerForClient = new MainServerForClient(sessions, userRepository, statisticsRepository, gameServerForMainServer);
-            r = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_CLIENT);
-            r.rebind(RmiConstants.BINDING_NAME_MAIN_SERVER_FOR_CLIENT, mainServerForClient);
+            mainServerForClient = new MainServerForClient(this, userRepository, statisticsRepository, gameServerForMainServer);
+            registry = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_CLIENT);
+            registry.rebind(RmiConstants.BINDING_NAME_MAIN_SERVER_FOR_CLIENT, mainServerForClient);
             LOGGER.info("Registered MainServerForClient binding.");
 
-            mainServerForGameServer = new MainServerForGameServer(sessions, userRepository, statisticsRepository);
-            r = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_GAME_SERVER);
-            r.rebind(RmiConstants.BINDING_NAME_MAIN_SERVER_FOR_GAME_SERVER, mainServerForGameServer);
+            mainServerForGameServer = new MainServerForGameServer(this, userRepository, statisticsRepository);
+            registry = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_GAME_SERVER);
+            registry.rebind(RmiConstants.BINDING_NAME_MAIN_SERVER_FOR_GAME_SERVER, mainServerForGameServer);
             LOGGER.info("Registered MainServerForGameServer binding.");
 
         } catch (RemoteException e) {
@@ -88,8 +87,8 @@ public class MainServerController {
         }
 
         try {
-            r = LocateRegistry.getRegistry(props.getProperty("gameserver1"), RmiConstants.PORT_NUMBER_GAME_SERVER);
-            gameServerForMainServer = (IGameServerForMainServer) r.lookup(RmiConstants.BINDING_NAME_GAME_SERVER_FOR_MAIN_SERVER);
+            registry = LocateRegistry.getRegistry(props.getProperty("gameserver1"), RmiConstants.PORT_NUMBER_GAME_SERVER);
+            gameServerForMainServer = (IGameServerForMainServer) registry.lookup(RmiConstants.BINDING_NAME_GAME_SERVER_FOR_MAIN_SERVER);
         } catch (RemoteException | NotBoundException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while connecting to the Game server through RMI.", e);
             return false;
@@ -105,6 +104,17 @@ public class MainServerController {
         mainServerForClient.close();
         mainServerForGameServer.close();
         DatabaseUtilities.close();
+    }
+    
+    /**
+     * Gets the collection of all sessions (synchronized).
+     * 
+     * @return A collection of all sessions (synchronized).
+     */
+    public List<SessionData> getSessions() {
+        synchronized(sessions) {
+            return sessions;
+        }
     }
 
 }
