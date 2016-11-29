@@ -2,18 +2,18 @@ package nl.soccar.mainserver.rmi.server;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import nl.soccar.library.SessionData;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
-import nl.soccar.rmi.SessionData;
-import nl.soccar.rmi.interfaces.IGameServer;
+import nl.soccar.rmi.interfaces.IMainServerForGameServer;
 
 /**
  * A MainServerForGameServer is an RMI-stub object used by game servers that
- * realizes the RMI-methods provided by the IGameServer interface.
+ realizes the RMI-methods provided by the IMainServerForGameServer interface.
  *
  * @author PTS34A
  */
-public class MainServerForGameServer extends MainServer implements IGameServer {
+public class MainServerForGameServer extends MainServer implements IMainServerForGameServer {
 
     /**
      * Constructor used for instantiation of a MainServerForGameServer object.

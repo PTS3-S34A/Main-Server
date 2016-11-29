@@ -4,10 +4,11 @@ import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.soccar.library.SessionData;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
-import nl.soccar.rmi.SessionData;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class MainServer extends UnicastRemoteObject {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MainServer.class);
+    private static final Logger LOGGER = Logger.getLogger(MainServer.class.getSimpleName());
 
     private final List<SessionData> sessions;
     private final UserRepository userRepository;
@@ -44,9 +45,9 @@ public abstract class MainServer extends UnicastRemoteObject {
     public void close() {
         try {
             UnicastRemoteObject.unexportObject(this, true);
-            LOGGER.info("Unregistered " + this.getClass().getSimpleName() + " binding.");
+            LOGGER.log(Level.INFO, "Unregistered {0} binding.", this.getClass().getSimpleName());
         } catch (NoSuchObjectException e) {
-            LOGGER.error("Server could not be unexported.", e);
+            LOGGER.log(Level.SEVERE, "Server could not be unexported.", e);
         }
     }
 
