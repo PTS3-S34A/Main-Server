@@ -1,6 +1,7 @@
 package nl.soccar.mainserver.rmi;
 
 import java.rmi.RemoteException;
+import nl.soccar.library.SessionData;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
@@ -38,6 +39,16 @@ public class MainServerForGameServer extends GeneralMainServer implements IMainS
     @Override
     public void deregister(IGameServerForMainServer gameServer) throws RemoteException {
         super.getController().deregisterGameServer(gameServer);
+    }
+
+    @Override
+    public void sessionCreated(IGameServerForMainServer gamsServer, SessionData sessionData) throws RemoteException {
+        super.getController().sessionCreated(gamsServer, sessionData);
+    }
+
+    @Override
+    public void sessionDestroyed(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
+        super.getController().sessionDestroyed(gameServer, sessionData);
     }
 
     @Override
