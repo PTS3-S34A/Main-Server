@@ -1,17 +1,19 @@
 package nl.soccar.mainserver.rmi;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.soccar.library.SessionData;
+import nl.soccar.library.enumeration.BallType;
+import nl.soccar.library.enumeration.Duration;
+import nl.soccar.library.enumeration.MapType;
 import nl.soccar.mainserver.data.context.StatisticsMySqlContext;
 import nl.soccar.mainserver.data.context.UserMySqlContext;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
@@ -31,14 +33,12 @@ public class MainServerController {
 
     private static final Logger LOGGER = Logger.getLogger(MainServerController.class.getSimpleName());
 
-    private static final String LOCATION_PROPERTIES = "gameserver.properties";
-
     private Registry registry;
     private MainServerForClient mainServerForClient;
     private MainServerForGameServer mainServerForGameServer;
-    private IGameServerForMainServer gameServerForMainServer;
 
-    private final List<SessionData> sessions;
+    private final List<IGameServerForMainServer> gameServers;
+    private final Map<IGameServerForMainServer, List<SessionData>> sessions;
     private final UserRepository userRepository;
     private final StatisticsRepository statisticsRepository;
 
@@ -52,12 +52,13 @@ public class MainServerController {
     public MainServerController() {
         DatabaseUtilities.init();
 
-        sessions = new ArrayList<>();
+        gameServers = new ArrayList<>();
+        sessions = new HashMap<>();
         userRepository = new UserRepository(new UserMySqlContext());
         statisticsRepository = new StatisticsRepository(new StatisticsMySqlContext());
 
         try {
-            mainServerForClient = new MainServerForClient(this, userRepository, statisticsRepository, gameServerForMainServer);
+            mainServerForClient = new MainServerForClient(this, userRepository, statisticsRepository);
             registry = LocateRegistry.createRegistry(RmiConstants.PORT_NUMBER_CLIENT);
             registry.rebind(RmiConstants.BINDING_NAME_MAIN_SERVER_FOR_CLIENT, mainServerForClient);
             LOGGER.info("Registered MainServerForClient binding.");
@@ -73,34 +74,6 @@ public class MainServerController {
     }
 
     /**
-     * Connects the main server to the game server(s) IP-address(es) that is/are
-     * listed in the gameserver.properties file.
-     *
-     * @return True when the main server connected succesfully to the
-     * games(servers) listed in the gameserver.properties file.
-     */
-    public boolean connectGameServers() {
-        Properties props = new Properties();
-
-        try (FileInputStream input = new FileInputStream(LOCATION_PROPERTIES)) {
-            props.load(input);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while loading the gameerver properties file.", e);
-            return false;
-        }
-
-        try {
-            registry = LocateRegistry.getRegistry(props.getProperty("gameserver1"), RmiConstants.PORT_NUMBER_GAME_SERVER);
-            gameServerForMainServer = (IGameServerForMainServer) registry.lookup(RmiConstants.BINDING_NAME_GAME_SERVER_FOR_MAIN_SERVER);
-        } catch (RemoteException | NotBoundException e) {
-            LOGGER.log(Level.SEVERE, "An error occurred while connecting to the Game server through RMI.", e);
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Unexports the RMI-stubs and closes the database connection.
      */
     public void close() {
@@ -109,15 +82,76 @@ public class MainServerController {
         DatabaseUtilities.close();
     }
 
+    public void registerGameServer(IGameServerForMainServer gameServer) {
+        synchronized (gameServers) {
+            if (gameServers.contains(gameServer)) {
+                return;
+            }
+
+            gameServers.add(gameServer);
+        }
+
+        List<SessionData> list = new ArrayList<>();
+        synchronized (sessions) {
+            sessions.put(gameServer, list);
+        }
+
+        LOGGER.info("Game server registered.");
+    }
+
+    public void deregisterGameServer(IGameServerForMainServer gameServer) {
+        synchronized (gameServers) {
+            gameServers.remove(gameServer);
+        }
+
+        synchronized (sessions) {
+            sessions.remove(gameServer);
+        }
+
+        LOGGER.info("Game server deregistered.");
+    }
+
+    public void sessionCreated(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            sessions.get(gameServer).add(sessionData);
+        }
+
+        LOGGER.log(Level.INFO, "Session {0} added.", sessionData.getRoomName());
+    }
+
+    public void sessionDestroyed(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            sessions.get(gameServer).remove(sessionData);
+        }
+
+        LOGGER.log(Level.INFO, "Session {0} destroyed.", sessionData.getRoomName());
+    }
+
+    public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
+        Random random = new Random();
+
+        IGameServerForMainServer server = gameServers.get(random.nextInt(gameServers.size()));
+
+        LOGGER.log(Level.INFO, "Session create request ({0}) sent.", name);
+
+        return server.createSession(name, password, capacity, duration, mapType, ballType);
+    }
+
     /**
      * Gets the collection of all sessions (synchronized).
      *
      * @return A collection of all sessions (synchronized).
      */
     public List<SessionData> getSessions() {
-        synchronized (sessions) {
-            return sessions;
+        List<SessionData> list = new ArrayList<>();
+
+        synchronized (gameServers) {
+            synchronized (sessions) {
+                gameServers.stream().map(sessions::get).forEach(list::addAll);
+            }
         }
+
+        return list;
     }
 
 }

@@ -15,8 +15,7 @@ import nl.soccar.mainserver.rmi.MainServerController;
 public class Main implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getSimpleName());
-    
-    private static final String CONNECT_GAMESERVERS_COMMAND = "connect";
+
     private static final String COMMAND_EXIT = "exit";
 
     private final MainServerController controller;
@@ -54,6 +53,8 @@ public class Main implements Runnable {
                     break;
                 }
             }
+            
+            controller.close();
         }
     }
 
@@ -65,15 +66,9 @@ public class Main implements Runnable {
      */
     private boolean processInput(String input) {
         if (input.equalsIgnoreCase(COMMAND_EXIT)) {
-            controller.close();
             return true;
-        } else if (input.equalsIgnoreCase(CONNECT_GAMESERVERS_COMMAND)) {
-            if (controller.connectGameServers()) {
-                LOGGER.log(Level.INFO, "Game server(s) connected successfully.");
-            } else {
-                LOGGER.log(Level.WARNING, "Game servers could not be connected successfully.");
-            }
         }
+
         return false;
     }
 

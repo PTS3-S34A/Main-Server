@@ -3,10 +3,8 @@ package nl.soccar.mainserver.rmi;
 import java.rmi.NoSuchObjectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import nl.soccar.library.SessionData;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 
@@ -46,19 +44,14 @@ public abstract class GeneralMainServer extends UnicastRemoteObject {
     public final void close() {
         try {
             UnicastRemoteObject.unexportObject(this, true);
-            LOGGER.log(Level.INFO, "Unregistered {0} binding.", this.getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "Unregistered {0} binding.", getClass().getSimpleName());
         } catch (NoSuchObjectException e) {
             LOGGER.log(Level.SEVERE, "Server could not be unexported.", e);
         }
     }
 
-    /**
-     * Gets the collection of all SessionData objects.
-     *
-     * @return A collection of all SessionData objects.
-     */
-    public final List<SessionData> getSessions() {
-        return controller.getSessions();
+    public final MainServerController getController() {
+        return controller;
     }
 
     /**
