@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.soccar.library.SessionData;
+import nl.soccar.library.enumeration.BallType;
+import nl.soccar.library.enumeration.Duration;
+import nl.soccar.library.enumeration.MapType;
 import nl.soccar.mainserver.data.context.StatisticsMySqlContext;
 import nl.soccar.mainserver.data.context.UserMySqlContext;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
@@ -105,6 +109,32 @@ public class MainServerController {
         }
 
         LOGGER.info("Game server deregistered.");
+    }
+
+    public void sessionCreated(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            sessions.get(gameServer).add(sessionData);
+        }
+
+        LOGGER.log(Level.INFO, "Session {0} added.", sessionData.getRoomName());
+    }
+
+    public void sessionDestroyed(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            sessions.get(gameServer).remove(sessionData);
+        }
+
+        LOGGER.log(Level.INFO, "Session {0} destroyed.", sessionData.getRoomName());
+    }
+
+    public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
+        Random random = new Random();
+
+        IGameServerForMainServer server = gameServers.get(random.nextInt(gameServers.size()));
+
+        LOGGER.log(Level.INFO, "Session create request ({0}) sent.", name);
+
+        return server.createSession(name, password, capacity, duration, mapType, ballType);
     }
 
     /**
