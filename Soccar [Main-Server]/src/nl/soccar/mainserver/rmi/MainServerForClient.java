@@ -68,8 +68,7 @@ public class MainServerForClient extends GeneralMainServer implements IClientUna
 
     @Override
     public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
-        // TODO
-        return false;
+        return super.getController().createSession(name, password, capacity, duration, mapType, ballType);
     }
 
     // IClientAuthenticated methods
