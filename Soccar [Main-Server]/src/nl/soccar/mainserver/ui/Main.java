@@ -16,7 +16,6 @@ public class Main implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(Main.class.getSimpleName());
 
-    private static final String CONNECT_GAMESERVERS_COMMAND = "connect";
     private static final String COMMAND_EXIT = "exit";
 
     private final MainServerController controller;
