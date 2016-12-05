@@ -127,6 +127,26 @@ public class MainServerController {
         LOGGER.log(Level.INFO, "Session {0} destroyed.", sessionData.getRoomName());
     }
 
+    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            SessionData session = sessions.get(gameServer).get(sessions.get(gameServer).indexOf(sessionData));
+            int occupation = session.getOccupation();
+            if (++occupation <= session.getCapacity()) {
+                session.setOccupation(++occupation);
+            }
+        }
+    }
+
+    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            SessionData session = sessions.get(gameServer).get(sessions.get(gameServer).indexOf(sessionData));
+            int occupation = session.getOccupation();
+            if (--occupation >= 0) {
+                session.setOccupation(--occupation);
+            }
+        }
+    }
+
     public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
         Random random = new Random();
 
