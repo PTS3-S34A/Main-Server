@@ -52,6 +52,16 @@ public class MainServerForGameServer extends GeneralMainServer implements IMainS
     }
 
     @Override
+    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
+
+    }
+
+    @Override
+    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
+
+    }
+
+    @Override
     public void addGoals(String username, int goals) throws RemoteException {
         super.getStatisticsRepository().addGoals(username, goals);
     }
