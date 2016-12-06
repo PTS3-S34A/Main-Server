@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,6 +126,36 @@ public class MainServerController {
         }
 
         LOGGER.log(Level.INFO, "Session {0} destroyed.", sessionData.getRoomName());
+    }
+
+    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            Optional<SessionData> session = sessions.get(gameServer).stream().filter(s -> s.getRoomName().equals(sessionData.getRoomName())).findFirst();
+            if (!session.isPresent()) {
+                return;
+            }
+
+            SessionData s = session.get();
+            int occupation = s.getOccupation();
+            if (s.getCapacity() > occupation) {
+                s.setOccupation(occupation + 1);
+            }
+        }
+    }
+
+    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+        synchronized (sessions) {
+            Optional<SessionData> session = sessions.get(gameServer).stream().filter(s -> s.getRoomName().equals(sessionData.getRoomName())).findFirst();
+            if (!session.isPresent()) {
+                return;
+            }
+
+            SessionData s = session.get();
+            int occupation = s.getOccupation();
+            if (occupation > 0) {
+                s.setOccupation(occupation - 1);
+            }
+        }
     }
 
     public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
