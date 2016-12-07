@@ -159,7 +159,7 @@ public class MainServerController {
         }
     }
 
-    public boolean createSession(String name, String password, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
+    public boolean createSession(String name, String password, String hostName, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
         for (List<SessionData> sessions : sessions.values()) {
             for (SessionData session : sessions) {
                 if (session.getHostName().equals(name)) {
@@ -173,7 +173,7 @@ public class MainServerController {
         LOGGER.log(Level.INFO, "Session ({0}) created.", name);
 
         IGameServerForMainServer server = gameServers.get(RANDOM.nextInt(gameServers.size()));
-        return server.createSession(name, password, capacity, duration, mapType, ballType);
+        return server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
 
     }
 
