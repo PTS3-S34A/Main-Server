@@ -136,34 +136,58 @@ public class MainServerController {
         LOGGER.log(Level.INFO, "Session {0} destroyed.", roomName);
     }
 
-    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+    public void hostChanged(IGameServerForMainServer gameServer, String roomName, String newHostName) {
         synchronized (sessions) {
-            Optional<SessionData> session = sessions.get(gameServer).stream().filter(s -> s.getRoomName().equals(sessionData.getRoomName())).findFirst();
-            if (!session.isPresent()) {
+            List<SessionData> data = sessions.get(gameServer);
+
+            Optional<SessionData> sessionData = data.stream().filter(s -> s.getRoomName().equals(roomName)).findFirst();
+            if (!sessionData.isPresent()) {
                 return;
             }
 
-            SessionData s = session.get();
+            SessionData s = sessionData.get();
+            s.setHostName(newHostName);
+        }
+
+        LOGGER.log(Level.INFO, "Host of room {0} changed to {1}.", new Object[]{roomName, newHostName});
+    }
+
+    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) {
+        synchronized (sessions) {
+            List<SessionData> data = sessions.get(gameServer);
+
+            Optional<SessionData> sessionData = data.stream().filter(s -> s.getRoomName().equals(roomName)).findFirst();
+            if (!sessionData.isPresent()) {
+                return;
+            }
+
+            SessionData s = sessionData.get();
             int occupation = s.getOccupation();
             if (s.getCapacity() > occupation) {
                 s.setOccupation(occupation + 1);
             }
         }
+
+        LOGGER.log(Level.INFO, "Occupancy for room {0} increased.", roomName);
     }
 
-    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) {
+    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) {
         synchronized (sessions) {
-            Optional<SessionData> session = sessions.get(gameServer).stream().filter(s -> s.getRoomName().equals(sessionData.getRoomName())).findFirst();
-            if (!session.isPresent()) {
+            List<SessionData> data = sessions.get(gameServer);
+
+            Optional<SessionData> sessionData = data.stream().filter(s -> s.getRoomName().equals(roomName)).findFirst();
+            if (!sessionData.isPresent()) {
                 return;
             }
 
-            SessionData s = session.get();
+            SessionData s = sessionData.get();
             int occupation = s.getOccupation();
             if (occupation > 0) {
                 s.setOccupation(occupation - 1);
             }
         }
+
+        LOGGER.log(Level.INFO, "Occupancy for room {0} decreased.", roomName);
     }
 
     public boolean createSession(String name, String password, String hostName, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {

@@ -52,13 +52,18 @@ public class MainServerForGameServer extends GeneralMainServer implements IMainS
     }
 
     @Override
-    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
-        super.getController().increaseSessionOccupancy(gameServer, sessionData);
+    public void hostChanged(IGameServerForMainServer gameServer, String roomName, String newHostName) throws RemoteException {
+        super.getController().hostChanged(gameServer, roomName, newHostName);
     }
 
     @Override
-    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
-        super.getController().decreaseSessionOccupancy(gameServer, sessionData);
+    public void increaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) throws RemoteException {
+        super.getController().increaseSessionOccupancy(gameServer, roomName);
+    }
+
+    @Override
+    public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) throws RemoteException {
+        super.getController().decreaseSessionOccupancy(gameServer, roomName);
     }
 
     @Override
