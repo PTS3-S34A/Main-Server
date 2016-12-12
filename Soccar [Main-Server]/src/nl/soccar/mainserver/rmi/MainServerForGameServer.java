@@ -47,8 +47,8 @@ public class MainServerForGameServer extends GeneralMainServer implements IMainS
     }
 
     @Override
-    public void sessionDestroyed(IGameServerForMainServer gameServer, SessionData sessionData) throws RemoteException {
-        super.getController().sessionDestroyed(gameServer, sessionData);
+    public void sessionDestroyed(IGameServerForMainServer gameServer, String roomName) throws RemoteException {
+        super.getController().sessionDestroyed(gameServer, roomName);
     }
 
     @Override
