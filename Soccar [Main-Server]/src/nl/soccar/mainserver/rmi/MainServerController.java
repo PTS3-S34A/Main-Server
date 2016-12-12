@@ -124,12 +124,12 @@ public class MainServerController {
     public void sessionDestroyed(IGameServerForMainServer gameServer, String roomName) {
         synchronized (sessions) {
             List<SessionData> data = sessions.get(gameServer);
-            
+
             Optional<SessionData> sessionData = data.stream().filter(s -> s.getRoomName().equals(roomName)).findFirst();
             if (!sessionData.isPresent()) {
                 return;
             }
-            
+
             data.remove(sessionData.get());
         }
 
@@ -167,12 +167,14 @@ public class MainServerController {
     }
 
     public boolean createSession(String name, String password, String hostName, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
-        for (List<SessionData> sessions : this.sessions.values()) {
-            for (SessionData session : sessions) {
-                if (session.getHostName().equals(name)) {
-                    LOGGER.log(Level.INFO, "Session ({0}) is not created because the room name already exists.", name);
+        synchronized (sessions) {
+            for (List<SessionData> sessions : this.sessions.values()) {
+                for (SessionData session : sessions) {
+                    if (session.getRoomName().equals(name)) {
+                        LOGGER.log(Level.INFO, "Session ({0}) is not created because the room name already exists.", name);
 
-                    return false;
+                        return false;
+                    }
                 }
             }
         }
@@ -181,7 +183,6 @@ public class MainServerController {
 
         IGameServerForMainServer server = gameServers.get(RANDOM.nextInt(gameServers.size()));
         return server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
-
     }
 
     /**
