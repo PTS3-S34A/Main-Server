@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import nl.soccar.exception.RogueGameServerException;
 import nl.soccar.library.SessionData;
 import nl.soccar.library.enumeration.BallType;
 import nl.soccar.library.enumeration.Duration;
@@ -30,11 +33,15 @@ import nl.soccar.rmi.interfaces.IGameServerForMainServer;
  *
  * @author PTS34A
  */
-public class MainServerController {
+public final class MainServerController {
 
     private static final Logger LOGGER = Logger.getLogger(MainServerController.class.getSimpleName());
+
     private static final Random RANDOM = new Random();
 
+    private static final int PING_INTERVAL = 10000; // in milliseconds
+
+    private Timer timer;
     private Registry registry;
     private MainServerForClient mainServerForClient;
     private MainServerForGameServer mainServerForGameServer;
@@ -54,6 +61,7 @@ public class MainServerController {
     public MainServerController() {
         DatabaseUtilities.init();
 
+        timer = new Timer();
         gameServers = new ArrayList<>();
         sessions = new HashMap<>();
         userRepository = new UserRepository(new UserMySqlContext());
@@ -73,12 +81,54 @@ public class MainServerController {
         } catch (RemoteException e) {
             LOGGER.log(Level.SEVERE, "An error occurred while locating and/or binding the registry.", e);
         }
+
+        continuouslyPingGameServers();
     }
 
     /**
-     * Unexports the RMI-stubs and closes the database connection.
+     * Continously pings all game servers to check if the RMI connection is
+     * active. A random value is sent to the game servers for them to process
+     * with a pre-defined formula. If the result of the formula is not correct,
+     * the connected game server is possibly rogue. If the result of the formula
+     * is not correct or there was no response at all, the game server is
+     * deregistered.
+     */
+    public void continuouslyPingGameServers() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                synchronized (gameServers) {
+                    List<IGameServerForMainServer> serversToRemove = new ArrayList<>();
+
+                    gameServers.forEach(server -> {
+                        try {
+                            int pingCalculationValue = RANDOM.nextInt(100);
+                            if (pingCalculationValue * RmiConstants.PING_CALCULATION_FACTOR != server.ping(pingCalculationValue)) {
+                                throw new RogueGameServerException("Error", "The connected game server did not return the correct result of the predefined ping formula.");
+                            }
+                        } catch (RemoteException e) {
+                            serversToRemove.add(server);
+
+                            LOGGER.log(Level.WARNING, "A game server is deregistered because it is no longer active.", e);
+                        } catch (RogueGameServerException e) {
+                            serversToRemove.add(server);
+
+                            LOGGER.log(Level.WARNING, "A game server is deregisterd because it did not return the correct result of the predefined ping formula.", e);
+                        }
+                    });
+
+                    serversToRemove.stream().forEach(s -> deregisterGameServer(s));
+                }
+            }
+        }, 0, PING_INTERVAL);
+    }
+
+    /**
+     * Stops the ping timer, unexports the RMI-stubs and closes the database
+     * connection.
      */
     public void close() {
+        timer.cancel();
         mainServerForClient.close();
         mainServerForGameServer.close();
         DatabaseUtilities.close();
@@ -203,11 +253,11 @@ public class MainServerController {
             }
         }
 
-        int maxAvailableMemory = Integer.MIN_VALUE;
+        long maxAvailableMemory = Integer.MIN_VALUE;
         IGameServerForMainServer server = null;
 
         for (IGameServerForMainServer gameServer : gameServers) {
-            int availableMemory = gameServer.getAvailableMemory();
+            long availableMemory = gameServer.getAvailableMemory();
             if (availableMemory > maxAvailableMemory) {
                 maxAvailableMemory = availableMemory;
                 server = gameServer;
