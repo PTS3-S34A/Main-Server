@@ -65,11 +65,7 @@ public class Main implements Runnable {
      * @return True when the exit command is recognized.
      */
     private boolean processInput(String input) {
-        if (input.equalsIgnoreCase(COMMAND_EXIT)) {
-            return true;
-        }
-
-        return false;
+        return input.equalsIgnoreCase(COMMAND_EXIT);
     }
 
     /**
