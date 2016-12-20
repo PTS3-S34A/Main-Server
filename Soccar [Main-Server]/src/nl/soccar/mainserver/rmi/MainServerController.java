@@ -141,6 +141,11 @@ public final class MainServerController {
         DatabaseUtilities.close();
     }
 
+    /**
+     * Notifies the Main server when a new game server is registered.
+     *
+     * @param gameServer The game server that is registered at the Main server.
+     */
     public void registerGameServer(IGameServerForMainServer gameServer) {
         synchronized (gameServers) {
             if (gameServers.contains(gameServer)) {
@@ -158,6 +163,12 @@ public final class MainServerController {
         LOGGER.info("Game server registered.");
     }
 
+    /**
+     * Notifies the Main server when a game server is deregistered.
+     *
+     * @param gameServer The game server that is deregistered at the Main
+     * server.
+     */
     public void deregisterGameServer(IGameServerForMainServer gameServer) {
         synchronized (gameServers) {
             gameServers.remove(gameServer);
@@ -170,6 +181,12 @@ public final class MainServerController {
         LOGGER.info("Game server deregistered.");
     }
 
+    /**
+     * Notifies the Main server when new session is created on a Game server.
+     *
+     * @param gameServer The game server on which the session is created.
+     * @param sessionData The data of the session that is created.
+     */
     public void sessionCreated(IGameServerForMainServer gameServer, SessionData sessionData) {
         synchronized (sessions) {
             sessions.get(gameServer).add(sessionData);
@@ -178,6 +195,12 @@ public final class MainServerController {
         LOGGER.log(Level.INFO, "Session {0} added.", sessionData.getRoomName());
     }
 
+    /**
+     * Notifies the Main server when a session is terminated on a Game server.
+     *
+     * @param gameServer The game server on which the session is hosted.
+     * @param roomName The name of the room that is terminated.
+     */
     public void sessionDestroyed(IGameServerForMainServer gameServer, String roomName) {
         synchronized (sessions) {
             List<SessionData> data = sessions.get(gameServer);
@@ -193,6 +216,13 @@ public final class MainServerController {
         LOGGER.log(Level.INFO, "Session {0} destroyed.", roomName);
     }
 
+    /**
+     * Notifies the Main server when the host plauer leaves the session.
+     *
+     * @param gameServer The game server on which the session is hosted.
+     * @param roomName The name of the room whose host player leaves.
+     * @param newHostName The name of the new host player.
+     */
     public void hostChanged(IGameServerForMainServer gameServer, String roomName, String newHostName) {
         synchronized (sessions) {
             List<SessionData> data = sessions.get(gameServer);
@@ -209,6 +239,13 @@ public final class MainServerController {
         LOGGER.log(Level.INFO, "Host of room {0} changed to {1}.", new Object[]{roomName, newHostName});
     }
 
+    /**
+     * Increases the occupancy of the given session on the Main server.
+     *
+     * @param gameServer The game server on which the session occupancy needs to
+     * be increased.
+     * @param roomName The name of the room whose occupancy is being increased.
+     */
     public void increaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) {
         synchronized (sessions) {
             List<SessionData> data = sessions.get(gameServer);
@@ -228,6 +265,13 @@ public final class MainServerController {
         LOGGER.log(Level.INFO, "Occupancy for room {0} increased.", roomName);
     }
 
+    /**
+     * Decreases the occupancy of the given session on the Main server.
+     *
+     * @param gameServer The game server on which the session occupancy needs to
+     * be decreased.
+     * @param roomName The name of the room whose occupancy is being decreased.
+     */
     public void decreaseSessionOccupancy(IGameServerForMainServer gameServer, String roomName) {
         synchronized (sessions) {
             List<SessionData> data = sessions.get(gameServer);
@@ -247,10 +291,26 @@ public final class MainServerController {
         LOGGER.log(Level.INFO, "Occupancy for room {0} decreased.", roomName);
     }
 
+    /**
+     * Creates a new game session on a remote Game server. The Game Server on
+     * which the session will be created is chosen based on the amount of free
+     * memory for the Java Virtual Machine.
+     *
+     * @param name The roomname of the session that is being created.
+     * @param password The password of the session that is being created.
+     * @param hostName The username of the player that created the session.
+     * @param capacity The player capacity of the session that is being created.
+     * @param duration The game duration of the session that is being created.
+     * @param mapType The maptype of the session that is being created.
+     * @param ballType The balltype of the session that is being created.
+     * @return True if the session is created successfully.
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
+     */
     public boolean createSession(String name, String password, String hostName, int capacity, Duration duration, MapType mapType, BallType ballType) throws RemoteException {
         synchronized (sessions) {
-            for (List<SessionData> sessions : this.sessions.values()) {
-                for (SessionData session : sessions) {
+            for (List<SessionData> allSessions : this.sessions.values()) {
+                for (SessionData session : allSessions) {
                     if (session.getRoomName().equals(name)) {
                         LOGGER.log(Level.INFO, "Session ({0}) is not created because the room name already exists.", name);
 
@@ -277,9 +337,9 @@ public final class MainServerController {
     }
 
     /**
-     * Gets the collection of all sessions (synchronized).
+     * Gets all running sessions.
      *
-     * @return A collection of all sessions (synchronized).
+     * @return a collection of all running sessions.
      */
     public List<SessionData> getSessions() {
         List<SessionData> list = new ArrayList<>();
