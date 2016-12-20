@@ -203,10 +203,20 @@ public class MainServerController {
             }
         }
 
+        int maxAvailableMemory = Integer.MIN_VALUE;
+        IGameServerForMainServer server = null;
+
+        for (IGameServerForMainServer gameServer : gameServers) {
+            int availableMemory = gameServer.getAvailableMemory();
+            if (availableMemory > maxAvailableMemory) {
+                maxAvailableMemory = availableMemory;
+                server = gameServer;
+            }
+        }
+
         LOGGER.log(Level.INFO, "Session ({0}) created.", name);
 
-        IGameServerForMainServer server = gameServers.get(RANDOM.nextInt(gameServers.size()));
-        return server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
+        return server == null ? false : server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
     }
 
     /**
