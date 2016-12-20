@@ -87,40 +87,47 @@ public final class MainServerController {
 
     /**
      * Continously pings all game servers to check if the RMI connection is
-     * active. A random value is sent to the game servers for them to process
-     * with a pre-defined formula. If the result of the formula is not correct,
-     * the connected game server is possibly rogue. If the result of the formula
-     * is not correct or there was no response at all, the game server is
-     * deregistered.
+     * active.
      */
     public void continuouslyPingGameServers() {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                synchronized (gameServers) {
-                    List<IGameServerForMainServer> serversToRemove = new ArrayList<>();
-
-                    gameServers.forEach(server -> {
-                        try {
-                            int pingCalculationValue = RANDOM.nextInt(100);
-                            if (pingCalculationValue * RmiConstants.PING_CALCULATION_FACTOR != server.ping(pingCalculationValue)) {
-                                throw new RogueGameServerException("Error", "The connected game server did not return the correct result of the predefined ping formula.");
-                            }
-                        } catch (RemoteException e) {
-                            serversToRemove.add(server);
-
-                            LOGGER.log(Level.WARNING, "A game server is deregistered because it is no longer active.", e);
-                        } catch (RogueGameServerException e) {
-                            serversToRemove.add(server);
-
-                            LOGGER.log(Level.WARNING, "A game server is deregisterd because it did not return the correct result of the predefined ping formula.", e);
-                        }
-                    });
-
-                    serversToRemove.stream().forEach(s -> deregisterGameServer(s));
-                }
+                pingGameServers();
             }
         }, 0, PING_INTERVAL);
+    }
+
+    /**
+     * Pings all game servers to check if the RMI connection is active. A random
+     * value is sent to the game servers for them to process with a pre-defined
+     * formula. If the result of the formula is not correct, the connected game
+     * server is possibly rogue. If the result of the formula is not correct or
+     * there was no response at all, the game server is deregistered.
+     */
+    private void pingGameServers() {
+        synchronized (gameServers) {
+            List<IGameServerForMainServer> serversToRemove = new ArrayList<>();
+
+            gameServers.forEach(server -> {
+                try {
+                    int pingCalculationValue = RANDOM.nextInt(100);
+                    if (pingCalculationValue * RmiConstants.PING_CALCULATION_FACTOR != server.ping(pingCalculationValue)) {
+                        throw new RogueGameServerException("Error", "The connected game server did not return the correct result of the predefined ping formula.");
+                    }
+                } catch (RemoteException e) {
+                    serversToRemove.add(server);
+
+                    LOGGER.log(Level.WARNING, "A game server is deregistered because it is no longer active.", e);
+                } catch (RogueGameServerException e) {
+                    serversToRemove.add(server);
+
+                    LOGGER.log(Level.WARNING, "A game server is deregisterd because it did not return the correct result of the predefined ping formula.", e);
+                }
+            });
+
+            serversToRemove.stream().forEach(s -> deregisterGameServer(s));
+        }
     }
 
     /**
