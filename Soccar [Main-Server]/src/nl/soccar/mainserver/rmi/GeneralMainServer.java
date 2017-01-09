@@ -9,6 +9,8 @@ import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 
 /**
+ * Abstract class that serves as base for all Main Server RMI-stub objects. It
+ * provides methods to retrieve the MainServerController and data repositories.
  *
  * @author PTS34A
  */

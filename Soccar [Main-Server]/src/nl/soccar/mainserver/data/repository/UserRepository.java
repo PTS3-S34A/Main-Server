@@ -1,5 +1,7 @@
 package nl.soccar.mainserver.data.repository;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -19,6 +21,8 @@ public class UserRepository extends Repository {
 
     private final IUserDataContract context;
 
+    private final Map<String, Privilege> privileges;
+
     /**
      * Constructor used for initiation of a UserClientDataRepository object that
      * can be used for manipulation of user data in a persistence service that
@@ -29,6 +33,8 @@ public class UserRepository extends Repository {
      */
     public UserRepository(IUserDataContract context) {
         this.context = context;
+
+        privileges = new HashMap<>();
     }
 
     /**
@@ -98,6 +104,31 @@ public class UserRepository extends Repository {
             LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the checkPassword method.", e);
         }
         return false;
+    }
+
+    /**
+     * Retrieves the privilege of the user with the given username from the
+     * persistency service.
+     *
+     * @param username The username of the user whose privilege is being
+     * retrieved.
+     * @return The privilege of the given user.
+     */
+    public Privilege getPrivilege(String username) {
+        Privilege privilege = privileges.get(username);
+
+        if (privilege == null) {
+            try {
+                Future<Privilege> f = super.getPool().submit(() -> context.getPrivilege(username));
+                privilege = f.get();
+                
+                privileges.put(username, privilege);
+            } catch (InterruptedException | ExecutionException e) {
+                LOGGER.log(Level.WARNING, "An error occurred while submitting a callable in the getPrivilege method.", e);
+            }
+        }
+
+        return privilege;
     }
 
 }
