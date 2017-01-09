@@ -53,4 +53,14 @@ public interface IUserDataContract {
      */
     boolean checkPassword(String username, byte[] hashedPassword);
 
+    /**
+     * Retrieves the privilege of the user with the given username from the
+     * persistency service.
+     *
+     * @param username The username of the user whose privilege is being
+     * retrieved.
+     * @return The privilege of the given user.
+     */
+    Privilege getPrivilege(String username);
+
 }
