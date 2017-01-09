@@ -90,13 +90,15 @@ public class UserMySqlContext implements IUserDataContract {
 
     @Override
     public Privilege getPrivilege(String username) {
-        Privilege privilege = Privilege.NORMAL;
+        Privilege privilege = Privilege.GUEST;
 
         try (CallableStatement cs = DatabaseUtilities.prepareCall("{? = call get_privilege(?)}")) {
             cs.registerOutParameter(1, Types.VARCHAR);
             cs.setString(2, username);
             cs.execute();
-            privilege = Privilege.valueOf(cs.getString(1));
+            
+            String value = cs.getString(1);
+            privilege = cs.wasNull() ? Privilege.GUEST : Privilege.valueOf(value);
         } catch (SQLException e) {
             LOGGER.log(Level.WARNING, "An error occurred while retrieving the privilege of a user from the database.", e);
         }
