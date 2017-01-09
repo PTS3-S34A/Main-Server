@@ -2,6 +2,7 @@ package nl.soccar.mainserver.rmi;
 
 import java.rmi.RemoteException;
 import nl.soccar.library.SessionData;
+import nl.soccar.library.enumeration.Privilege;
 import nl.soccar.mainserver.data.repository.StatisticsRepository;
 import nl.soccar.mainserver.data.repository.UserRepository;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
@@ -89,6 +90,11 @@ public class MainServerForGameServer extends GeneralMainServer implements IMainS
     @Override
     public void incrementGamesPlayed(String username) throws RemoteException {
         super.getStatisticsRepository().incrementGamesPlayed(username);
+    }
+
+    @Override
+    public Privilege getPrivilege(String username) throws RemoteException {
+        return super.getUserRepository().getPrivilege(username);
     }
 
 }

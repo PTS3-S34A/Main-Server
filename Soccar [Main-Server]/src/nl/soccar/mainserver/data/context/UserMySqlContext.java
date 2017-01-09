@@ -73,7 +73,7 @@ public class UserMySqlContext implements IUserDataContract {
 
         try (PreparedStatement ps = DatabaseUtilities.prepareStatement("SELECT password, password_salt FROM User WHERE username = ?")) {
             ps.setString(1, username);
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     storedHash = rs.getBytes("password");
@@ -86,6 +86,22 @@ public class UserMySqlContext implements IUserDataContract {
 
         byte[] hash = PasswordUtilities.addSalt(password, salt);
         return Arrays.equals(hash, storedHash);
+    }
+
+    @Override
+    public Privilege getPrivilege(String username) {
+        Privilege privilege = Privilege.NORMAL;
+
+        try (CallableStatement cs = DatabaseUtilities.prepareCall("{? = call get_privilege(?)}")) {
+            cs.registerOutParameter(1, Types.VARCHAR);
+            cs.setString(2, username);
+            cs.execute();
+            privilege = Privilege.valueOf(cs.getString(1));
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "An error occurred while retrieving the privilege of a user from the database.", e);
+        }
+
+        return privilege;
     }
 
 }
