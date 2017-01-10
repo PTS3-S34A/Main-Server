@@ -8,7 +8,7 @@ import org.junit.Test;
 
 /**
  * JUnit test that tests the nl.soccar.rmi.IClientAuthenticated interface.
- * 
+ *
  * @author PTS34A
  */
 public class IClientAuthenticatedTest {
@@ -26,8 +26,9 @@ public class IClientAuthenticatedTest {
 
     /**
      * Tests the getStatistics Method.
-     * 
-     * @throws RemoteException 
+     *
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void getStatisticsTest() throws RemoteException {

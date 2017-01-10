@@ -29,7 +29,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the register Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void registerTest() throws RemoteException {
@@ -41,7 +42,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the deregister Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void deregisterTest() throws RemoteException {
@@ -53,7 +55,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the sessionCreated Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void sessionCreatedTest() throws RemoteException {
@@ -65,7 +68,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the sessionDestroyed Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void sessionDestroyedTest() throws RemoteException {
@@ -77,7 +81,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the hostChanged Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void hostChangedTest() throws RemoteException {
@@ -89,7 +94,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the increaseSessionOccupancy Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void increaseSessionOccupancyTest() throws RemoteException {
@@ -101,7 +107,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the decreaseSessionOccupancy Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void decreaseSessionOccupancyTest() throws RemoteException {
@@ -113,7 +120,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the addGoals Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void addGoalsTest() throws RemoteException {
@@ -125,7 +133,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the addAssists Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void addAssistsTest() throws RemoteException {
@@ -137,7 +146,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the incrementGamesWon Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void incrementGamesWonTest() throws RemoteException {
@@ -149,7 +159,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the incrementGamesLost Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void incrementGamesLostTest() throws RemoteException {
@@ -161,7 +172,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the incrementGamesPlayed Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method.
      */
     @Test
     public void incrementGamesPlayedTest() throws RemoteException {
@@ -173,7 +185,8 @@ public class IMainServerForGameServerTest {
     /**
      * Tests the getPrivilege Method.
      * 
-     * @throws RemoteException 
+     * @throws RemoteException Thrown when a communication error occurs during
+     * the remote call of this method. 
      */
     @Test
     public void getPrivilegeTest() throws RemoteException {
