@@ -20,7 +20,6 @@ public class PasswordUtilitiesTest {
 
     /**
      * Tests the generalteSalt Method.
-     * 
      */
     @Test
     public void generatingSaltTest() {
@@ -33,7 +32,6 @@ public class PasswordUtilitiesTest {
     
     /**
      * Tests the addSalt Method.
-     * 
      */
     @Test
     public void hashingTest() {

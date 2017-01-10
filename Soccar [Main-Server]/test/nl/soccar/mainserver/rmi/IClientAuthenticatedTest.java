@@ -2,7 +2,7 @@ package nl.soccar.mainserver.rmi;
 
 import java.rmi.RemoteException;
 import nl.soccar.rmi.interfaces.IClientAuthenticated;
-import org.junit.Assert;
+import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class IClientAuthenticatedTest {
     private IClientAuthenticated clientAuthenticated;
 
     /**
-     * Instantiation of test objects.
+     * Instantiation of test object.
      */
     @Before
     public void setUp() {
@@ -32,7 +32,7 @@ public class IClientAuthenticatedTest {
      */
     @Test
     public void getStatisticsTest() throws RemoteException {
-        Assert.assertNotNull(clientAuthenticated.getStatistics("username"));
+        assertNotNull(clientAuthenticated.getStatistics("username"));
     }
 
 }

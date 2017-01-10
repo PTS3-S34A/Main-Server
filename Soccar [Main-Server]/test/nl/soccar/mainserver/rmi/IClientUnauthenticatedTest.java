@@ -21,7 +21,7 @@ public class IClientUnauthenticatedTest {
     private IClientUnauthenticated clientUnauthenticated;
 
     /**
-     * Instantiation of test objects.
+     * Instantiation of test object.
      */
     @Before
     public void setUp() {
@@ -51,7 +51,7 @@ public class IClientUnauthenticatedTest {
     }
 
     /**
-     * Tests the checkPassword method.
+     * Tests the checkPassword Method.
      *
      * @throws RemoteException Thrown when a communication error occurs during
      * the remote call of this method.
