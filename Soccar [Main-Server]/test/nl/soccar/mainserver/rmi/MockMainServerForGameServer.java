@@ -7,7 +7,8 @@ import nl.soccar.rmi.interfaces.IGameServerForMainServer;
 import nl.soccar.rmi.interfaces.IMainServerForGameServer;
 
 /**
- *
+ * Mock for the nl.soccar.rmi.IMainServerForGameServer interface.
+ * 
  * @author PTS34A
  */
 public class MockMainServerForGameServer implements IMainServerForGameServer {

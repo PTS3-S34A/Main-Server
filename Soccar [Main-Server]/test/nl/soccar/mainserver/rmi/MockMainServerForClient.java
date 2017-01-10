@@ -12,7 +12,8 @@ import nl.soccar.rmi.interfaces.IClientAuthenticated;
 import nl.soccar.rmi.interfaces.IClientUnauthenticated;
 
 /**
- *
+ * Mock for the nl.soccar.rmi.IClientAuthenticated and  nl.soccar.rmi.IClientUnauthenticated interfaces.
+ * 
  * @author PTS34A
  */
 public class MockMainServerForClient implements IClientAuthenticated, IClientUnauthenticated {

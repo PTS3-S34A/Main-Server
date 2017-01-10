@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nl.soccar.mainserver.rmi;
 
 import java.rmi.RemoteException;
@@ -16,43 +11,78 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- *
+ * JUnit test that tests the nl.soccar.rmi.IClientUnauthenticated interface.
+ * 
  * @author PTS34A
  */
 public class IClientUnauthenticatedTest {
     
+    // Declaration of test object.
     private IClientUnauthenticated clientUnauthenticated;
     
+    /**
+     * Instantiation of test objects.
+     */
     @Before
     public void setUp() {
         clientUnauthenticated = new MockMainServerForClient();
     }
     
+    /**
+     * Tests the add Method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void addTest() throws RemoteException {
         assertTrue(clientUnauthenticated.add("username", new String("password").getBytes()));
     }
     
+    /**
+     * Tests the checkIfExists Method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void checkIfExistsTest() throws RemoteException {
         assertTrue(clientUnauthenticated.checkIfExists("username"));
     }
     
+    /**
+     * Tests the checkPassword method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void checkPasswordTest() throws RemoteException {
         assertNotNull(clientUnauthenticated.checkPassword("username", new String("password").getBytes()));
     }
     
+    /**
+     * Tests the getAllStatistics Method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void getAllStatisticsTest() throws RemoteException {
         assertNotNull(clientUnauthenticated.getAllStatistics());
     }
     
+    /**
+     * Tests the getAllSessions Method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void getAllSessionsTest() throws RemoteException {
         assertNotNull(clientUnauthenticated.getAllSessions());
     }
     
+    /**
+     * Tests the createSession Method.
+     * 
+     * @throws RemoteException 
+     */
     @Test
     public void createSessionTest() throws RemoteException {
         assertTrue(clientUnauthenticated.createSession("name", "password", "hostname", 0, Duration.MINUTES_3, MapType.ICE, BallType.FOOTBALL));

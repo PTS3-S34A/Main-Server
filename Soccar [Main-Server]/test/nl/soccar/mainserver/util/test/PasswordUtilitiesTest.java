@@ -15,8 +15,13 @@ public class PasswordUtilitiesTest {
     private static final int DEFAULT_SALT_LENGTH = 16;
     private static final int HASHED_PASSWORD_LENGTH = 64;
     
+    // Declaration of test object.
     private final String password = "Welkom123";
 
+    /**
+     * Tests the generalteSalt Method.
+     * 
+     */
     @Test
     public void generatingSaltTest() {
         byte[] salt = PasswordUtilities.generateSalt();
@@ -26,6 +31,10 @@ public class PasswordUtilitiesTest {
         assertEquals(DEFAULT_SALT_LENGTH, salt.length);
     }
     
+    /**
+     * Tests the addSalt Method.
+     * 
+     */
     @Test
     public void hashingTest() {
         byte[] salt = PasswordUtilities.generateSalt();

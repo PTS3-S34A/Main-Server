@@ -7,7 +7,8 @@ import nl.soccar.library.enumeration.MapType;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
 
 /**
- *
+ * Mock for the nl.soccar.rmi.IGameServerForMainServer interface.
+ * 
  * @author PTS34A
  */
 public class MockGameServerForMainServer implements IGameServerForMainServer {
