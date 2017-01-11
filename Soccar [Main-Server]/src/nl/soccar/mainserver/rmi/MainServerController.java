@@ -1,18 +1,5 @@
 package nl.soccar.mainserver.rmi;
 
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import nl.soccar.exception.RogueGameServerException;
 import nl.soccar.library.SessionData;
 import nl.soccar.library.enumeration.BallType;
@@ -25,6 +12,13 @@ import nl.soccar.mainserver.data.repository.UserRepository;
 import nl.soccar.mainserver.util.DatabaseUtilities;
 import nl.soccar.rmi.RmiConstants;
 import nl.soccar.rmi.interfaces.IGameServerForMainServer;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstract class that serves as base for all MainServerController
@@ -40,16 +34,14 @@ public final class MainServerController {
     private static final Random RANDOM = new Random();
 
     private static final int PING_INTERVAL = 10000; // in milliseconds
-
-    private Timer timer;
-    private Registry registry;
-    private MainServerForClient mainServerForClient;
-    private MainServerForGameServer mainServerForGameServer;
-
     private final List<IGameServerForMainServer> gameServers;
     private final Map<IGameServerForMainServer, List<SessionData>> sessions;
     private final UserRepository userRepository;
     private final StatisticsRepository statisticsRepository;
+    private Timer timer;
+    private Registry registry;
+    private MainServerForClient mainServerForClient;
+    private MainServerForGameServer mainServerForGameServer;
 
     /**
      * Constructor user for instantiation of a MainServerController object. The
@@ -136,6 +128,9 @@ public final class MainServerController {
      */
     public void close() {
         timer.cancel();
+        timer.purge();
+        timer = null;
+
         mainServerForClient.close();
         mainServerForGameServer.close();
         DatabaseUtilities.close();
@@ -333,7 +328,7 @@ public final class MainServerController {
 
         LOGGER.log(Level.INFO, "Session ({0}) created.", name);
 
-        return server == null ? false : server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
+        return server != null && server.createSession(name, password, hostName, capacity, duration, mapType, ballType);
     }
 
     /**
