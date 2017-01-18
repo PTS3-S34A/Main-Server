@@ -118,7 +118,7 @@ public final class MainServerController {
                 }
             });
 
-            serversToRemove.stream().forEach(s -> deregisterGameServer(s));
+            serversToRemove.stream().forEach(this::deregisterGameServer);
         }
     }
 
